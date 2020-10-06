@@ -56,24 +56,24 @@ class DataCollectServer(object):
         """
         Save the rgb and ir images into req.data_dir
         """
-        # self.ir_image_raw_sub  = rospy.Subscriber(self.ir_image_raw_topic, Image, self.ir_image_raw_cb)
-        # time.sleep(1)
-        # self.ir_image_raw_sub.unregister()
+        self.ir_image_raw_sub  = rospy.Subscriber(self.ir_image_raw_topic, Image, self.ir_image_raw_cb)
+        time.sleep(1)
+        self.ir_image_raw_sub.unregister()
 
-        # ir_path = os.path.join(req.data_dir, 'ir' + str(req.prefix) + '.jpg')
-        # cv2.imwrite(ir_path, self.cv_ir_img)
+        ir_path = os.path.join(req.data_dir, 'ir' + str(req.prefix) + '.jpg')
+        cv2.imwrite(ir_path, self.cv_ir_img)
 
-        # rospy.loginfo("Finish collecting {}-th IR image".format(req.prefix))
+        rospy.loginfo("Finish collecting {}-th IR image".format(req.prefix))
         # time.sleep(0.5)
 
-        self.rgb_image_raw_sub = rospy.Subscriber(self.rgb_image_raw_topic, Image, self.rgb_image_raw_cb)
-        time.sleep(1)
-        self.rgb_image_raw_sub.unregister()
+        # self.rgb_image_raw_sub = rospy.Subscriber(self.rgb_image_raw_topic, Image, self.rgb_image_raw_cb)
+        # time.sleep(1)
+        # self.rgb_image_raw_sub.unregister()
 
-        rgb_path = os.path.join(req.data_dir, 'rgb' + str(req.prefix) + '.jpg')
-        cv2.imwrite(rgb_path, self.cv_rgb_img)
+        # rgb_path = os.path.join(req.data_dir, 'rgb' + str(req.prefix) + '.jpg')
+        # cv2.imwrite(rgb_path, self.cv_rgb_img)
 
-        rospy.loginfo("Finish collecting {}-th RGB image".format(req.prefix))
+        # rospy.loginfo("Finish collecting {}-th RGB image".format(req.prefix))
 
     def run_data_collector_server(self):
         s = rospy.Service("collect_data", DataCollect, self.handle_data_collector)

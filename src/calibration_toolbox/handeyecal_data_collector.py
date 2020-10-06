@@ -37,8 +37,8 @@ class HandEyeCalDataCollector(object):
 
         self.calib_point_num = calib_point_num
 
-        self.base_frame_name = "base_link"
-        self.ee_frame_name = "ee_link"
+        self.base_frame_name = "base"
+        self.ee_frame_name = "tool0_controller"
 
         if camera is 'ps':
             self.rgb_raw_topic = "/camera/rgb/image_raw"
