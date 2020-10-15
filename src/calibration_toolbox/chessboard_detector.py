@@ -34,9 +34,9 @@ def chessboard_pose(img_dir, img_filename, cam_mtx, cam_dist, objp, pattern=(7, 
         cv2.drawChessboardCorners(img, chessboard_size_tuple, corners, ret)
         # cv2.imwrite(os.path.join(img_dir, img_name + "_corner.png"), img)
 
-        print ("Camera Info")
-        print (cam_mtx)
-        print (cam_dist)
+        # print ("Camera Info")
+        # print (cam_mtx)
+        # print (cam_dist)
 
         _, rvecs, tvecs, inlier = cv2.solvePnPRansac(objp, corners2, cam_mtx, cam_dist)
         
@@ -52,11 +52,13 @@ def chessboard_pose(img_dir, img_filename, cam_mtx, cam_dist, objp, pattern=(7, 
         imgpts, jac = cv2.projectPoints(axis, rvecs, tvecs, cam_mtx, cam_dist)
 
         imgpts = np.int32(imgpts).reshape(-1,2)
-        print ("imgpts")
-        print (imgpts)
+        # print ("imgpts")
+        # print (imgpts)
 
         img = draw(img, imgpts)
         cv2.imwrite(os.path.join(img_dir, img_name+ '_axis.png'),img)
+
+        print ("Finish processing: {}".format(img_filename))
 
         return R, tvecs
     else:
@@ -88,7 +90,7 @@ if __name__ == "__main__":
     # print (R)
     # print (t)
 
-    data_dir = "/home/hongtao/Dropbox/RSS2021/calib/1006_extrinsic_calib_ps_tool0"
+    data_dir = "/home/hongtao/Dropbox/RSS2021/calib/1014_ps_rgb_ex_tool0"
     file_list = os.listdir(data_dir)
 
     for fname in file_list:
