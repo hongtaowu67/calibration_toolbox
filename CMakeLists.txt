@@ -60,6 +60,7 @@ catkin_python_setup()
  add_service_files(
    FILES
    DataCollect.srv
+   IntMarkerCalib.srv
    HandEyeCalDataCollect.srv
  )
 
@@ -172,6 +173,8 @@ include_directories(
 install(PROGRAMS
   nodes/data_collect_server_node.py
   nodes/handeyecal_data_collect_server_node.py
+  nodes/cam_to_world_broadcaster_node.py
+  nodes/interactive_marker_calib.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
