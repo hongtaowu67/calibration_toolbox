@@ -334,6 +334,6 @@ if __name__=="__main__":
     IMC.make6DofMarker( parent_frame, InteractiveMarkerControl.MOVE_ROTATE_3D )
     server.applyChanges()
 
-    s = rospy.Service("save_ref_xform", IntMarkerCalib, IMC.save_refined_xform)
+    s = rospy.Service("save_ref_xform", IntMarkerCalibSave, IMC.save_refined_xform)
 
     rospy.spin()

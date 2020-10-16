@@ -60,7 +60,7 @@ catkin_python_setup()
  add_service_files(
    FILES
    DataCollect.srv
-   IntMarkerCalib.srv
+   IntMarkerCalibSave.srv
    HandEyeCalDataCollect.srv
  )
 
