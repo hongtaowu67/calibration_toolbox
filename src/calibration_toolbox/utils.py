@@ -1,4 +1,6 @@
 import numpy as np
+import yaml
+from yaml import CLoader
 
 def quat2rotm(quat):
     """
@@ -172,3 +174,9 @@ def isRotm(R) :
     I = np.identity(3, dtype = R.dtype)
     n = np.linalg.norm(I - shouldBeIdentity)
     return n < 1e-6
+
+def getDictFromYamlFilename(filename):
+    """
+    Read data from a YAML files
+    """
+    return yaml.load(file(filename), Loader=CLoader)

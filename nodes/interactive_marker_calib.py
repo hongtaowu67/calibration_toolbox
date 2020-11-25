@@ -54,7 +54,7 @@ class IntMarkerCalib(object):
                   cam2ee_init_pose_file_path, 
                   parent_frame="tool0_controller",
                   cam_root_frame="camera_link",
-                  cam_frame="camera_rgb_optical_frame"):
+                  cam_frame="camera_depth_optical_frame"):
         self.tfBuffer = tf2_ros.Buffer()
         self.listener = tf2_ros.TransformListener(self.tfBuffer)
         self.broadcaster = tf2_ros.TransformBroadcaster()
@@ -287,7 +287,7 @@ class IntMarkerCalib(object):
 
         cam2ee_pose_ros = self.tfBuffer.lookup_transform(self.parent_frame, self.cam_frame, rospy.Time(0))
 
-        cam2ee_pos_ros = cam2ee_pose_ros.transform.position
+        cam2ee_pos_ros = cam2ee_pose_ros.transform.translation
         cam2ee_quat_ros = cam2ee_pose_ros.transform.rotation
 
         cam2ee_pos  = np.array([cam2ee_pos_ros.x, cam2ee_pos_ros.y, cam2ee_pos_ros.z])
@@ -326,7 +326,7 @@ if __name__=="__main__":
 
     server = InteractiveMarkerServer("basic_controls")  
     
-    cam2ee_init_pose_file_path = "/home/hongtao/Dropbox/RSS2021/calib/1014_ps_rgb_ex_tool0/camera_pose.txt"
+    cam2ee_init_pose_file_path = "/home/hongtao/Dropbox/RSS2021/calib/1016_ps_ir_ex_tool0/camera_pose.txt"
     IMC = IntMarkerCalib(cam2ee_init_pose_file_path)
 
     parent_frame = "tool0_controller"

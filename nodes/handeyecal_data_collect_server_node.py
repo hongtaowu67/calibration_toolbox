@@ -9,5 +9,5 @@ if __name__ == "__main__":
 
     time.sleep(0.5)
 
-    HECDCServer = HandEyeCalDataCollector(camera='ps')
+    HECDCServer = HandEyeCalDataCollector(camera='ir')
     HECDCServer.run_handeyecal_dta_collect_server()

@@ -165,7 +165,7 @@ class AXXBCalibrator(object):
 
 
 if __name__ == "__main__":
-    data_dir = "/home/hongtao/Dropbox/RSS2021/calib/1006_extrinsic_calib_ps_tool0"
+    data_dir = "/home/hongtao/Dropbox/RSS2021/calib/1016_ps_ir_ex_tool0"
     
     AXXBCalib = AXXBCalibrator()
     AXXBCalib.load_xforms(data_dir)

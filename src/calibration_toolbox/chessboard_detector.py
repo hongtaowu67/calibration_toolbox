@@ -67,7 +67,7 @@ def chessboard_pose(img_dir, img_filename, cam_mtx, cam_dist, objp, pattern=(7, 
 
 
 if __name__ == "__main__":
-    with open("/home/hongtao/.ros/camera_info/rgb_PS1080_PrimeSense.yaml", 'r') as f:
+    with open("/home/hongtao/.ros/camera_info/depth_PS1080_PrimeSense.yaml", 'r') as f:
         doc = yaml.load(f)
         cam_mtx = np.array(doc['camera_matrix']['data']).reshape(3, 3)
         cam_dist = np.array(doc['distortion_coefficients']['data'])
@@ -90,11 +90,11 @@ if __name__ == "__main__":
     # print (R)
     # print (t)
 
-    data_dir = "/home/hongtao/Dropbox/RSS2021/calib/1014_ps_rgb_ex_tool0"
+    data_dir = "/home/hongtao/Dropbox/RSS2021/calib/1016_ps_ir_ex_tool0"
     file_list = os.listdir(data_dir)
 
     for fname in file_list:
-        if "img.png" in fname:
+        if "img.jpg" in fname:
             R, t = chessboard_pose(data_dir, fname, cam_mtx, cam_dist, objp)
             pose = make_rigid_transformation(t, R)
 
