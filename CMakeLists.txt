@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 project(calibration_toolbox)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -14,6 +14,13 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   geometry_msgs
   message_generation
+  joint_state_publisher
+  moveit_core
+  moveit_ros_planning
+  moveit_ros_planning_interface
+  moveit_msgs
+  moveit_visual_tools
+  robot_state_publisher
 )
 
 ## System dependencies are found with CMake's conventions
@@ -124,12 +131,14 @@ catkin_package(
 include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
+  ${PROJECT_SOURCE_DIRS}
+  ./include
 )
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/calibration_toolbox.cpp
-# )
+add_library(panda src/panda.cpp)
+target_link_libraries(panda ${catkin_LIBRARIES})
+
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -139,7 +148,8 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/calibration_toolbox_node.cpp)
+add_executable(handeye_data_collector src/handeye_data_collector.cpp)
+target_link_libraries(handeye_data_collector panda)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
