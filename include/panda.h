@@ -40,8 +40,9 @@ public:
     ~Panda()
     {
         delete _move_group_ptr;
-        delete _visual_tools_ptr;
+        // delete _visual_tools_ptr;
         delete tf_listener_ptr;
+        delete _joint_model_group;
     }
 
     void moveToJoint(const std::vector<double>& config);
@@ -90,7 +91,7 @@ private:
     moveit::planning_interface::MoveGroupInterface::Plan _plan;
 
     // Visualization
-    moveit_visual_tools::MoveItVisualTools* _visual_tools_ptr;
+    // moveit_visual_tools::MoveItVisualTools* _visual_tools_ptr;
 
 };
 

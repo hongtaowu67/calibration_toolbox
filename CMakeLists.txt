@@ -22,6 +22,8 @@ find_package(catkin REQUIRED COMPONENTS
   moveit_visual_tools
   robot_state_publisher
   tf2_ros
+  cv_bridge
+  image_transport
 )
 
 ## System dependencies are found with CMake's conventions

@@ -1,4 +1,4 @@
-// Padna Robot
+// Panda Robot
 // Author: Hongtao Wu
 // Jan 12, 2021
 
@@ -85,7 +85,12 @@ void Panda::moveToJoint(
     if (_plan_success)
     {
         _move_group_ptr->move();
+        ros::Duration(0.5).sleep();
     }
+    
+    // Debug the joint values
+    // std::vector<double> joint = _move_group_ptr->getCurrentJointValues();
+    // ROS_INFO("Joint Value: %.4f, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f", joint[0], joint[1], joint[2], joint[3], joint[4], joint[5], joint[6]);
 }
 
 // Wrapper of moveit for moving to pose target
@@ -98,10 +103,9 @@ void Panda::moveToPose(
 
     if (_plan_success)
     {
-        // _visual_tools_ptr->publishTrajectoryLine(_plan.trajectory_, _joint_model_group);
-        // _visual_tools_ptr->trigger();
         _move_group_ptr->move();
-    }    
+        ros::Duration(0.5).sleep();
+    }
 }
 
 // Get current pose of the end effector
@@ -134,4 +138,3 @@ void Panda::printXform(
     ROS_INFO("x: %.2f, y: %.2f, z: %.2f", x, y, z);
     ROS_INFO("qw: %.2f, qx: %.2f, qy: %.2f, qz: %.2f", q_w, q_x, q_y, q_z);
 }
-
