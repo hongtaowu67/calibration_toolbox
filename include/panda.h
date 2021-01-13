@@ -8,34 +8,61 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <fstream>
+
 #include <math.h>
 
 #include <ros/ros.h>
 
 #include <moveit/move_group_interface/move_group_interface.h>
 #include <moveit/planning_scene_interface/planning_scene_interface.h>
-#include <geometry_msgs/Pose.h>
 #include <moveit_visual_tools/moveit_visual_tools.h>
+#include <geometry_msgs/Pose.h>
+
+#include <tf2_ros/transform_listener.h>
+#include <geometry_msgs/TransformStamped.h>
+#include <geometry_msgs/Transform.h>
 
 class Panda
 {
 public:
     // Constructor
-    Panda(); 
+    Panda();
+    Panda(
+        const double& vel, 
+        const double& acc, 
+        const double& sleep_time, 
+        const std::vector<double>& home_config,
+        const std::string& ee_frame,
+        const std::string& base_frame); 
     
     // Destructor
     ~Panda()
     {
         delete _move_group_ptr;
         delete _visual_tools_ptr;
+        delete tf_listener_ptr;
     }
 
-    void moveToJoint(const std::vector<double>& joint_position);
+    void moveToJoint(const std::vector<double>& config);
     void moveToPose(const geometry_msgs::Pose& pose);
 
-private:
-    ros::NodeHandle _nh;
+    geometry_msgs::TransformStamped getCurrentEEPose();
+
+    static void printXform(const geometry_msgs::TransformStamped);
+
+    tf2_ros::Buffer tf_buffer;
+    tf2_ros::TransformListener* tf_listener_ptr;
     
+    // End effector pose
+    geometry_msgs::TransformStamped ee_xform;
+
+private:
+    // End effector frame
+    std::string _ee_frame;
+    // Robot base frame pose
+    std::string _base_frame;
+
     // Sleep time between each pose
     double _sleep_time;
 
@@ -48,10 +75,11 @@ private:
     double _orn_tol;
     double _pos_tol;
 
+    // Planning success
     bool _plan_success;
 
     // Home joint position
-    std::vector<double> _home_joint_position;
+    std::vector<double> _home_config;
 
     // Moveit
     static const std::string                             _planning_group;

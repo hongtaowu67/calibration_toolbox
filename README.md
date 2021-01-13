@@ -8,3 +8,7 @@ To calibrate instrinsic, follow the instruction [here](http://wiki.ros.org/openn
 When using the *camera_calibration* ROS package, make sure to check the X, Y, Size, and Skew on the left of the window. Make sure all of them are turned green. Make sure that the camera is moved very closed to the chessboard. The distortion is most obvious when it is close to the chessboard.
 
 ## Franka Emika Panda Robot Extrinsic Calibration
+This repository solves AXXB problem to get the extrinsic calibration problem. The whole process goes through 2 steps: collecting data and solving AXXB. Now only eye-on-hand configuration is implemented for the data collection. But for solving AXXB, both eye-on-hand and hand-on-eye are implemented.
+
+### Data Collection
+In the data collection part, the robot moves to different configurations and collects the transformation from the hand (end effector) to base and the corresponding transformation from camera to chessboard.

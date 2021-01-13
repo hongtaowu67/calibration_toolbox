@@ -21,6 +21,7 @@ find_package(catkin REQUIRED COMPONENTS
   moveit_msgs
   moveit_visual_tools
   robot_state_publisher
+  tf2_ros
 )
 
 ## System dependencies are found with CMake's conventions
@@ -138,6 +139,8 @@ include_directories(
 ## Declare a C++ library
 add_library(panda src/panda.cpp)
 target_link_libraries(panda ${catkin_LIBRARIES})
+add_library(handeye_data_collector src/handeye_data_collector.cpp)
+target_link_libraries(handeye_data_collector ${catkin_LIBRARIES} panda)
 
 
 ## Add cmake target dependencies of the library
@@ -148,8 +151,8 @@ target_link_libraries(panda ${catkin_LIBRARIES})
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(handeye_data_collector src/handeye_data_collector.cpp)
-target_link_libraries(handeye_data_collector panda)
+add_executable(main_collector src/main.cpp)
+target_link_libraries(main_collector handeye_data_collector panda)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
