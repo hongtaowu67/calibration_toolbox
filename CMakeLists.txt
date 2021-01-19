@@ -67,12 +67,12 @@ catkin_python_setup()
 # )
 
 # Generate services in the 'srv' folder
- add_service_files(
-   FILES
-   DataCollect.srv
-   IntMarkerCalibSave.srv
-   HandEyeCalDataCollect.srv
- )
+# add_service_files(
+#   FILES
+#   DataCollect.srv
+#   IntMarkerCalibSave.srv
+#   HandEyeCalDataCollect.srv
+# )
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -185,13 +185,13 @@ target_link_libraries(main_collector handeye_data_collector panda)
 #   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
 
-install(PROGRAMS
-  nodes/data_collect_server_node.py
-  nodes/handeyecal_data_collect_server_node.py
-  nodes/cam_to_world_broadcaster_node.py
-  nodes/interactive_marker_calib.py
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
+# install(PROGRAMS
+#   nodes/data_collect_server_node.py
+#   nodes/handeyecal_data_collect_server_node.py
+#   nodes/cam_to_world_broadcaster_node.py
+#   nodes/interactive_marker_calib.py
+#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+# )
 
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
