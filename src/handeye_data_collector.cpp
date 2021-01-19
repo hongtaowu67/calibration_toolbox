@@ -13,8 +13,8 @@ HandeyeDataCollector::HandeyeDataCollector(
 {
     _save_dir = save_dir;
     _data_collection_config = data_collection_config;
-    double vel        = 0.5;
-    double acc        = 0.5;
+    double vel        = 0.2;
+    double acc        = 0.2;
     double sleep_time = 1.0;
 
     std::vector<double> home_config {0.0, -M_PI/4, 0.0, -2*M_PI/3, 0.0, M_PI/3, M_PI/4};
@@ -102,15 +102,16 @@ void HandeyeDataCollector::collectData()
     for (std::size_t i; i<config_num; i++)
     {
         _robot_ptr->moveToJoint(_data_collection_config[i]);
-        ros::Duration(0.5).sleep();
+        ros::Duration(1.0).sleep();
 
-        xform_txt = "/franka_test" + std::to_string(i) + ".txt";
-        img_png   = "/franka_test" + std::to_string(i) + ".png";
+        xform_txt = "/" + std::to_string(i) + "_robotpose.txt";
+        img_png   = "/" + std::to_string(i) + "_img.png";
         saveCurrentData(_save_dir + xform_txt, _save_dir + img_png);
         ros::Duration(0.5).sleep();
     }
 
     ROS_INFO("Finish collecting %d sets of data", config_num);
+    _robot_ptr->moveToHome();
 }
 
 void HandeyeDataCollector::imageCb(const sensor_msgs::ImageConstPtr& msg)

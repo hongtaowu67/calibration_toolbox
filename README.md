@@ -12,3 +12,37 @@ This repository solves AXXB problem to get the extrinsic calibration problem. Th
 
 ### Data Collection
 In the data collection part, the robot moves to different configurations and collects the transformation from the hand (end effector) to base and the corresponding transformation from camera to chessboard.
+
+1. Print the calibration chessboard in **doc/chessboard_A4.pdf** (**doc/chessboard_letter.pdf**) if you are using A4 (letter) paper. The size of each square is 29mm in chessboard_A4.pdf and 25.6mm in chessboard_letter.pdf.
+2. Attach the chessboard onto a flat rigid plate and fix it on the table.
+3. Move the robot to at least 15 configurations. Make sure in each configuration, the camera can see the whole chessboard and the chessboard is LARGE. Because if the chessboard is too small, the estimation of pose will be inaccurate.
+4. In **src/main_collector.cpp**, specify the data saving directory and the configurations you collected.
+5. In **src/main_collector.cpp**, specify the image topic of the camera. For PrimeSense 1.09, the rgb topic is "/camera/rgb/image_raw".
+6. Initialize the camera. To initialize PrimeSense 1.09,
+```
+roslaunch openni2_launch openni2.launch
+```
+7. Collect the data. Currently only the panda robot is implemented
+```
+rosrun calibration_toolbox main_collector
+```
+The robot will move through the configurations and collect the data. After the collection process is finished, each image is paired with a robot pose file. The image filename is "x_img.png"/; the robot pose filename is "x_robotpose.txt".
+
+### Chessboard Detection
+This repo uses OpenCV to find the chessboard pattern and get the pose of the chessboard in the camera frame.
+
+1. Specify the chessboard pattern, camera info yaml, and data directory in **src/calibration_toolbox/chessboard_detection.py**.
+2. Run the chessboard detector
+```
+python chessboard_detector.py
+```
+The chessboard poses are saved in the data directory. marker poses are saved in "x_markerpose.txt".
+
+### Solve AXXB to get the eye-to-hand transformation
+Use the Park & Martin's method to solve AXXB problem.
+1. Specify the data directory in **src/calibration_toolbox/axxb.py**
+2. Solve the AXXB problem
+```
+python axxb.py
+```
+The eye-to-hand transformation will be saved in the data directory. Make sure to check each of the base-to-tag transformation in the terminal. If the calibration is successful, they should be very close to each other.

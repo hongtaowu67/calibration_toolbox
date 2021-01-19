@@ -1,7 +1,6 @@
 """
-Robot control and action
-Forked from Andy Zeng's visual-pushing-grasping: https://github.com/andyzeng/visual-pushing-grasping
-Hongtao Wu
+UR Robot control and action with python-urx
+Author: Hongtao Wu
 Dec 22, 2019
 """
 

@@ -47,6 +47,7 @@ public:
 
     void moveToJoint(const std::vector<double>& config);
     void moveToPose(const geometry_msgs::Pose& pose);
+    void moveToHome();
 
     geometry_msgs::TransformStamped getCurrentEEPose();
 

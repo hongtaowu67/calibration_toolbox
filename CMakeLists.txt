@@ -153,7 +153,7 @@ target_link_libraries(handeye_data_collector ${catkin_LIBRARIES} panda)
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(main_collector src/main.cpp)
+add_executable(main_collector src/main_collector.cpp)
 target_link_libraries(main_collector handeye_data_collector panda)
 
 ## Rename C++ executable without prefix

@@ -6,8 +6,18 @@ import yaml
 
 from utils import *
 
+# Camera info
+camera_info_yaml = "/home/hongtao/.ros/camera_info/rgb_PS1080_PrimeSense.yaml"
 
-axis = np.float32([[0, 0, 0], [5*0.0256,0,0], [0,5*0.0256,0], [0,0,5*0.0256]]).reshape(-1,3)
+# Chessboard pattern
+width = 0.029
+x_num = 7
+y_num = 5
+
+# Data directory
+data_dir = "/home/hongtao/Desktop/011921_panda"
+
+axis = np.float32([[0, 0, 0], [3*width,0,0], [0,3*width,0], [0,0,3*width]]).reshape(-1,3)
 
 def draw(img, imgpts):
     cv2.line(img, tuple(imgpts[0]), tuple(imgpts[1]),[0,0,255],3)  #BGR
@@ -25,14 +35,14 @@ def chessboard_pose(img_dir, img_filename, cam_mtx, cam_dist, objp, pattern=(7, 
     img = cv2.imread(img_filepath)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    ret, corners = cv2.findChessboardCorners(img, chessboard_size_tuple, None)
+    ret, corners = cv2.findChessboardCorners(gray, chessboard_size_tuple, None)
 
     if ret == True:
         # Increase corner accuracy
         corners2 = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
         
         cv2.drawChessboardCorners(img, chessboard_size_tuple, corners, ret)
-        # cv2.imwrite(os.path.join(img_dir, img_name + "_corner.png"), img)
+        cv2.imwrite(os.path.join(img_dir, img_name + "_corner.png"), img)
 
         # print ("Camera Info")
         # print (cam_mtx)
@@ -67,38 +77,39 @@ def chessboard_pose(img_dir, img_filename, cam_mtx, cam_dist, objp, pattern=(7, 
 
 
 if __name__ == "__main__":
-    with open("/home/hongtao/.ros/camera_info/depth_PS1080_PrimeSense.yaml", 'r') as f:
+    with open(camera_info_yaml, 'r') as f:
         doc = yaml.load(f)
         cam_mtx = np.array(doc['camera_matrix']['data']).reshape(3, 3)
         cam_dist = np.array(doc['distortion_coefficients']['data'])
+    
+    print ("cam_mtx")
+    print (cam_mtx)
+    print("------------")
 
-    width = 0.0256
-    x_num = 7
-    y_num = 6
+    print ("cam_dist")
+    print (cam_dist)
+    print("------------")
+
+    pattern = (x_num, y_num)
     objp = np.zeros((x_num * y_num, 3), np.float32)
     
     for i in range(y_num):
         for j in range(x_num):
             index = i * x_num + j
             objp[index, 0] = j * width
-            objp[index, 1] = (y_num - 1 - i) * width
+            objp[index, 1] = i * width
             objp[index, 2] = 0
 
-    # data_dir = "/home/hongtao/Desktop"
-    # fname = "rgb1.jpg"
-    # R, t = chessboard_pose(data_dir, fname, cam_mtx, cam_dist, objp)
-    # print (R)
-    # print (t)
-
-    data_dir = "/home/hongtao/Dropbox/RSS2021/calib/1016_ps_ir_ex_tool0"
     file_list = os.listdir(data_dir)
 
     for fname in file_list:
-        if "img.jpg" in fname:
-            R, t = chessboard_pose(data_dir, fname, cam_mtx, cam_dist, objp)
+        if ".png" in fname:
+            print (fname)
+            R, t = chessboard_pose(data_dir, fname, cam_mtx, cam_dist, objp, pattern)
             pose = make_rigid_transformation(t, R)
 
             img_idx = fname.split('_')[0]
+    
             pose_file_path = os.path.join(data_dir, img_idx + '_markerpose.txt')
             # Tool pose in robot base frame
             with open(pose_file_path, 'w') as file1:

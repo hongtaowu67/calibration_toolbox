@@ -108,6 +108,11 @@ void Panda::moveToPose(
     }
 }
 
+// Move to home position
+void Panda::moveToHome(){
+    moveToJoint(_home_config);
+}
+
 // Get current pose of the end effector
 geometry_msgs::TransformStamped Panda::getCurrentEEPose()
 {    
