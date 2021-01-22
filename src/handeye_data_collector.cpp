@@ -19,7 +19,7 @@ HandeyeDataCollector::HandeyeDataCollector(
 
     std::vector<double> home_config {0.0, -M_PI/4, 0.0, -2*M_PI/3, 0.0, M_PI/3, M_PI/4};
 
-    std::string ee_frame = "panda_EE"; // End effector frame
+    std::string ee_frame = "panda_link8"; // End effector frame
     std::string base_frame = "panda_link0"; // Base frame 
     
     // Set up robot
@@ -30,12 +30,9 @@ HandeyeDataCollector::HandeyeDataCollector(
                             ee_frame, 
                             base_frame);
 
-    ROS_INFO("Testing saving xform");
     // Set up image subscriber
     _img_sub = _it.subscribe(image_topic, 1, &HandeyeDataCollector::imageCb, this);
     ros::Duration(1.0).sleep();
-    
-    saveCurrentData(_save_dir + "/franka_ee_test.txt", _save_dir + "/franka_ee_test.png");
 
     ROS_INFO("Finish setting up handeye data collector!");
 }

@@ -5,7 +5,7 @@ import yaml
 
 from utils import *
 
-data_dir = "/home/hongtao/Desktop/011921_panda"
+data_dir = "/home/hongtao/Desktop/012121_panda"
 
 class AXXBCalibrator(object):
     def __init__(self):

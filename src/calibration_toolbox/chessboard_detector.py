@@ -11,11 +11,11 @@ camera_info_yaml = "/home/hongtao/.ros/camera_info/rgb_PS1080_PrimeSense.yaml"
 
 # Chessboard pattern
 width = 0.029
-x_num = 7
-y_num = 5
+x_num = 5
+y_num = 7
 
 # Data directory
-data_dir = "/home/hongtao/Desktop/011921_panda"
+data_dir = "/home/hongtao/Desktop/012121_panda"
 
 axis = np.float32([[0, 0, 0], [3*width,0,0], [0,3*width,0], [0,0,3*width]]).reshape(-1,3)
 
