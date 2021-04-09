@@ -1,3 +1,8 @@
+# AXXB solver
+# Author: Hongtao Wu
+# Institution: Johns Hopkins University
+# Date: pr 09, 2021
+
 from __future__ import print_function, division
 import numpy as np
 import os
@@ -5,9 +10,13 @@ import yaml
 
 from utils import *
 
+# Data directory for saving teh captured data
 data_dir = "/home/hongtao/Desktop/012121_panda"
 
 class AXXBCalibrator(object):
+    """
+    Hand-eye calibration for AXXB problem
+    """
     def __init__(self):
         self.robot_poses = []
         self.marker_poses = []
@@ -17,12 +26,13 @@ class AXXBCalibrator(object):
         self.data_dir = None
     
     def load_xforms(self, load_dir):
-        """ Load robot pose and marker pose from a save directory
-        # Arguments
-        load_dir: the directory where calibration data was previously acquired from the robot.
-        # Returns
-        Two lists of 4x4 transformation matrices.
-        self.robot_poses, self.marker_poses
+        """ 
+        Load robot pose and marker pose from a save directory
+        Two lists of 4x4 homogeneous transformatin matrices will be saved in self.robot_poses
+        and self.marker_poses
+        
+        @type  load_dir: string
+        @param load_dir: the directory where calibration data was previously acquired from the robot.
         """
         self.data_dir = load_dir
         print ("Loading {}...".format(load_dir))
@@ -56,13 +66,9 @@ class AXXBCalibrator(object):
         """
         AX=XB solver.
         
-        Args:
-        - self.robot_poses (list of 4x4 numpy array): poses (homogenous transformation) of the robot end-effector in the robot base frame.
-        - self.marker_poses (list of 4x4 numpy array): poses (homogenous transformation) of the marker in the camera frame.
-        Return:
-        - self.cam2ee (4x4 numpy array): poses of the camera in the robot end-effector frame.
+        @rtype  self.cam2ee: 4x4 numpy.ndarry
+        @return self.cam2ee: poses of the camera in the robot end-effector frame.
         """
-
         assert len(self.robot_poses) == len(self.marker_poses), 'robot poses and marker poses are not of the same length!'
 
         n = len(self.robot_poses)
@@ -115,8 +121,9 @@ class AXXBCalibrator(object):
         return self.cam2ee
 
     def test(self):
-        """ Test the accuracy of the calculated result.
-            Use AXB to calculate the base2tag transformation for each frame.
+        """ 
+        Test the accuracy of the calculated result.
+        Use AXB to calculate the base2tag transformation for each frame.
         """
         n = len(self.robot_poses)
         for i in range(n):
@@ -128,8 +135,10 @@ class AXXBCalibrator(object):
             print("=========")
     
     def write_pose_file(self):
-        # Save the calibration file
-        # Calibration file is in (x,y,z) and (x,y,z,w) yaml file
+        """
+        Save the calibration file
+        Calibration file is in (x,y,z) and (x,y,z,w) yaml file
+        """
         calibration_file = os.path.join(self.data_dir, 'camera_pose.yaml')
         calibration_rotm_file = os.path.join(self.data_dir, 'camera_pose.txt')
         
@@ -162,8 +171,6 @@ class AXXBCalibrator(object):
 
         with open(calibration_file, 'w') as outfile:
             yaml.dump(pose, outfile, default_flow_style=False)
-
-
 
 
 if __name__ == "__main__":

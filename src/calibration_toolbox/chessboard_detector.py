@@ -1,3 +1,8 @@
+# Detecting chessboard in the data
+# Author: Hongtao Wu
+# Institution: Johns Hopkins University
+# Date: pr 09, 2021
+
 from __future__ import print_function
 import os
 import cv2
@@ -14,18 +19,38 @@ width = 0.029
 x_num = 5
 y_num = 7
 
-# Data directory
+# Data directory for saving the calibration data
 data_dir = "/home/hongtao/Desktop/012121_panda"
 
+# Visualized axis on the data
 axis = np.float32([[0, 0, 0], [3*width,0,0], [0,3*width,0], [0,0,3*width]]).reshape(-1,3)
 
 def draw(img, imgpts):
+    """
+    Draw the detction result (axis & origin of teh chessboard) on the image
+    """
     cv2.line(img, tuple(imgpts[0]), tuple(imgpts[1]),[0,0,255],3)  #BGR
     cv2.line(img, tuple(imgpts[0]), tuple(imgpts[2]),[0,255,0],3)
     cv2.line(img, tuple(imgpts[0]), tuple(imgpts[3]),[255,0,0],3)
     return img
 
 def chessboard_pose(img_dir, img_filename, cam_mtx, cam_dist, objp, pattern=(7, 6)):
+    """
+    Find the chessboard pose with OpenCV.
+
+    @type  img_dir: string
+    @param img_dir: directory of the image
+    @type  img_filename: string
+    @param img_filename: filename of the image
+    @type  cam_mtx: numpy.ndarray
+    @param cam_mtx: intrinsic matrix of the camera
+    @type  cam_dist: numpy.ndarry
+    @param cam_dist: distortion coefficient of the camera
+    @type  objp: numpy.ndarray
+    @param objp: 3D positions of the points on the chessboard
+    @type  pattern: tuple
+    @param pattern: pattern of the chessboard
+    """
     img_filepath = os.path.join(img_dir, img_filename)
     img_name = img_filename.split('.')[0]
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.0005)
