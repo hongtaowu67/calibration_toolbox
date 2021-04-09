@@ -3,3 +3,4 @@ src/calibration_toolbox/*.prc
 src/fusion_data_collector.cpp
 src/main_fusion.cpp
 include/fusion_data_collector.h
+.vscode/
