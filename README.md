@@ -1,6 +1,14 @@
 # Camera Calibration Toolbox
-
+This repo is for hand-eye calibration for camera on a manipulator.
+It has been tested on UR5 and Franka Emika Panda robot.
+Currently, it supports calibration on the Franka Emika Panda robot.
 To setup the connection of RGBD camera, please refer to [this repository](https://github.com/hongtaowu67/Engineering_Note).
+
+## Installation
+* [libfranka](https://frankaemika.github.io/docs/installation_linux.html) & [franka_ros](https://frankaemika.github.io/docs/installation_linux.html)
+* [MoveIt](http://docs.ros.org/en/kinetic/api/moveit_tutorials/html/doc/getting_started/getting_started.html#install-ros-and-catkin)
+* [openni_camera](http://wiki.ros.org/openni_camera) & [openni_launch](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&ved=2ahUKEwj3_6XqvfDvAhXXR30KHdprC3cQFjAAegQIChAE&url=http%3A%2F%2Fwiki.ros.org%2Fopenni_launch&usg=AOvVaw18FvTTmJ3VTTl4SuD4bV0d): for PrimeSense camera
+* [librealsense](https://github.com/IntelRealSense/librealsense/blob/master/doc/installation.md) & [realsense-ros](https://github.com/IntelRealSense/realsense-ros): for RealSense camera
 
 ## Intrinsic Calibration
 To calibrate instrinsic, follow the instruction [here](http://wiki.ros.org/openni_launch/Tutorials/IntrinsicCalibration). If the camera is an RGBD camera, make sure to calibrate both the RGB and IR camera.
@@ -18,11 +26,12 @@ In the data collection part, the robot moves to different configurations and col
 3. Move the robot to at least 15 configurations. Make sure in each configuration, the camera can see the whole chessboard and the chessboard is LARGE. Because if the chessboard is too small, the estimation of pose will be inaccurate.
 4. In **src/main_collector.cpp**, specify the data saving directory and the configurations you collected.
 5. In **src/main_collector.cpp**, specify the image topic of the camera. For PrimeSense 1.09, the rgb topic is "/camera/rgb/image_raw".
-6. Initialize the camera. To initialize PrimeSense 1.09,
+6. In **src/main_collector.cpp**, specify the base and end-effector link.
+7. Initialize the camera. To initialize PrimeSense 1.09,
 ```
 roslaunch openni2_launch openni2.launch
 ```
-7. Collect the data. Currently only the panda robot is implemented
+8. Collect the data. Currently only the panda robot is implemented
 ```
 rosrun calibration_toolbox main_collector
 ```
