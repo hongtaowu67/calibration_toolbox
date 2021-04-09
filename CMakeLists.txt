@@ -138,27 +138,22 @@ include_directories(
   ./include
 )
 
-## Declare a C++ library
+# Declare a C++ library
 add_library(panda src/panda.cpp)
 target_link_libraries(panda ${catkin_LIBRARIES})
 add_library(handeye_data_collector src/handeye_data_collector.cpp)
 target_link_libraries(handeye_data_collector ${catkin_LIBRARIES} panda)
-# add_library(fusion_data_collector src/fusion_data_collector.cpp)
-# target_link_libraries(fusion_data_collector ${catkin_LIBRARIES} panda)
-
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
 # add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
-## Declare a C++ executable
-## With catkin_make all packages are built within a single CMake context
-## The recommended prefix ensures that target names across packages don't collide
+# Declare a C++ executable
+# With catkin_make all packages are built within a single CMake context
+# The recommended prefix ensures that target names across packages don't collide
 add_executable(main_collector src/main_collector.cpp)
 target_link_libraries(main_collector handeye_data_collector panda)
-# add_executable(main_fusion src/main_fusion.cpp)
-# target_link_libraries(main_fusion fusion_data_collector panda)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
