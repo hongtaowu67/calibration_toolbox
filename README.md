@@ -4,6 +4,11 @@ It has been tested on UR5 and Franka Emika Panda robot.
 Currently, it supports calibration on the Franka Emika Panda robot.
 To setup the connection of RGBD camera, please refer to [this repository](https://github.com/hongtaowu67/Engineering_Note).
 
+<p align="center">
+  <img src="./images/thumbnail0.jpg" width="640"/>
+</p>
+
+
 ## Installation
 * [libfranka](https://frankaemika.github.io/docs/installation_linux.html) & [franka_ros](https://frankaemika.github.io/docs/installation_linux.html)
 * [MoveIt](http://docs.ros.org/en/kinetic/api/moveit_tutorials/html/doc/getting_started/getting_started.html#install-ros-and-catkin)
