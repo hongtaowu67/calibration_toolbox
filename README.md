@@ -1,5 +1,5 @@
 # Camera Calibration Toolbox
-This repo is for hand-eye calibration for camera on a manipulator.
+A toolbox for hand-eye calibration for camera on a manipulator.
 It has been tested on UR5 and Franka Emika Panda robot.
 Currently, it supports calibration on the Franka Emika Panda robot.
 To setup the connection of RGBD camera, please refer to [this repository](https://github.com/hongtaowu67/Engineering_Note).
@@ -35,7 +35,11 @@ In the data collection part, the robot moves to different configurations and col
 ```
 roslaunch openni2_launch openni2.launch
 ```
-8. Collect the data. Currently only the panda robot is implemented
+8. Launch the Panda robot
+```
+roslaunch panda_moveit_config panda_control_moveit_rviz.launch robot_ip:=<robot_ip> load_gripper:=<true/false>
+```
+9. Collect the data. Currently only the panda robot is implemented
 ```
 rosrun calibration_toolbox main_collector
 ```
