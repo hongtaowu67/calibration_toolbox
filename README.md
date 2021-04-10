@@ -5,7 +5,7 @@ Currently, it supports calibration on the Franka Emika Panda robot.
 To setup the connection of RGBD camera, please refer to [this repository](https://github.com/hongtaowu67/Engineering_Note).
 
 <p align="center">
-  <img src="./images/thumbnail0.jpg" width="640"/>
+  <img src="./doc/thumbnail0.jpg" width="640"/>
 </p>
 
 
