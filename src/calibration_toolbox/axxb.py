@@ -11,7 +11,7 @@ import yaml
 from utils import *
 
 # Data directory for saving teh captured data
-data_dir = "/home/hongtao/Desktop/012121_panda"
+data_dir = "/home/hongtao/Desktop/041021_panda_data_collect"
 
 class AXXBCalibrator(object):
     """

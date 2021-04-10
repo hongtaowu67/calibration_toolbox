@@ -20,7 +20,7 @@ x_num = 5
 y_num = 7
 
 # Data directory for saving the calibration data
-data_dir = "/home/hongtao/Desktop/012121_panda"
+data_dir = "/home/hongtao/Desktop/041021_panda_data_collect"
 
 # Visualized axis on the data
 axis = np.float32([[0, 0, 0], [3*width,0,0], [0,3*width,0], [0,0,3*width]]).reshape(-1,3)

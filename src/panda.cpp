@@ -116,7 +116,7 @@ void Panda::moveToHome(){
 // Get current pose of the end effector
 geometry_msgs::TransformStamped Panda::getCurrentEEPose()
 {    
-    return tf_buffer.lookupTransform(_base_frame, _ee_frame, ros::Time(0));;
+    return tf_buffer.lookupTransform(_base_frame, _ee_frame, ros::Time(0));
 }
 
 // Print xform for debug

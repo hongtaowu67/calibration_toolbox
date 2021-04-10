@@ -25,6 +25,8 @@ public:
     HandeyeDataCollector(
         const std::string& save_dir,
         const std::string& image_topic,
+        const std::string& base_frame,
+        const std::string& ee_frame,
         const std::vector< std::vector<double> >& data_collection_config
     );
     
@@ -47,6 +49,10 @@ private:
 
     // Data directory to save the collected data
     std::string _save_dir;
+
+    // Base and end-effector frame
+    std::string _base_frame;
+    std::string _ee_frame;
 
     // Robot configuration for collecting data
     std::vector< std::vector<double> > _data_collection_config;

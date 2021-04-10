@@ -1,13 +1,15 @@
 // Class to collect data for handeye calibration
 // Author: Hongtao Wu
-// Jan 12, 2021
+// Institution: Johns Hopkins University
+// Date: Jan 12, 2021
 
 #include "handeye_data_collector.h"
-
 
 HandeyeDataCollector::HandeyeDataCollector(
     const std::string& save_dir,
     const std::string& image_topic,
+    const std::string& base_frame,
+    const std::string& ee_frame,
     const std::vector< std::vector<double> >& data_collection_config
 ): _it(_nh)
 {
@@ -18,17 +20,17 @@ HandeyeDataCollector::HandeyeDataCollector(
     double sleep_time = 1.0;
 
     std::vector<double> home_config {0.0, -M_PI/4, 0.0, -2*M_PI/3, 0.0, M_PI/3, M_PI/4};
-
-    std::string ee_frame = "panda_link8"; // End effector frame
-    std::string base_frame = "panda_link0"; // Base frame 
+    
+    _base_frame = base_frame; // Base frame     
+    _ee_frame = ee_frame; // End effector frame
     
     // Set up robot
     _robot_ptr = new Panda (vel, 
                             acc, 
                             sleep_time, 
                             home_config, 
-                            ee_frame, 
-                            base_frame);
+                            _ee_frame, 
+                            _base_frame);
 
     // Set up image subscriber
     _img_sub = _it.subscribe(image_topic, 1, &HandeyeDataCollector::imageCb, this);
