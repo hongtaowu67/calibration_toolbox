@@ -1,7 +1,7 @@
 # Detecting chessboard in the data
 # Author: Hongtao Wu
-# Institution: Johns Hopkins University
-# Date: pr 09, 2021
+# Johns Hopkins University
+# Apr 09, 2021
 
 from __future__ import print_function
 import os
@@ -12,7 +12,7 @@ import yaml
 from utils import *
 
 # Camera info
-camera_info_yaml = "/home/hongtao/.ros/camera_info/rgb_D435_RealSense.yaml"
+camera_info_yaml = "/home/hongtao/.ros/camera_info/rgb_PS1080_PrimeSense.yaml"
 
 # Chessboard pattern
 width = 0.029
@@ -20,7 +20,7 @@ x_num = 5
 y_num = 7
 
 # Data directory for saving the calibration data
-data_dir = "/home/hongtao/Desktop/041021_panda_rs"
+data_dir = "/home/hongtao/Desktop/041321_panda_ps"
 
 # Visualized axis on the data
 axis = np.float32([[0, 0, 0], [3*width,0,0], [0,3*width,0], [0,0,3*width]]).reshape(-1,3)
