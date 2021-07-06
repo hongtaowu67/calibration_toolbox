@@ -1,7 +1,7 @@
 # AXXB solver
 # Author: Hongtao Wu
-# Institution: Johns Hopkins University
-# Date: pr 09, 2021
+# Johns Hopkins University
+# Apr 09, 2021
 
 from __future__ import print_function, division
 import numpy as np
@@ -10,20 +10,35 @@ import yaml
 
 from utils import *
 
-# Data directory for saving teh captured data
-data_dir = "/home/hongtao/Desktop/041021_panda_rs"
-
 class AXXBCalibrator(object):
     """
     Hand-eye calibration for AXXB problem
     """
-    def __init__(self):
+    def __init__(self, option="EH"):
+        """
+        @type  option: string
+        @param option: type of camera-robot configuration. 
+                "EBCB" (eye-on-base, get camera to base), 
+                "EBME" (eye-on-base, get marker in ee), 
+                "EH" (eye-on-hand, get ee to camera)
+        """
         self.robot_poses = []
         self.marker_poses = []
         self.pose_indices = []
-        self.cam2ee = None
+        self.calib_pose = None
 
         self.data_dir = None
+
+        self.option = option
+        self.option_list = ["EBCB", "EBME", "EH"]
+        assert self.option in self.option_list, "Option should be EBCB, EBME, or EH!"
+
+        if self.option is "EBCB":
+            self.option_str = "cam_to_base"
+        elif self.option is "EBME":
+            self.option_str = "marker_to_ee"
+        elif self.option is "EH":
+            self.option_str = "cam_to_ee"
     
     def load_xforms(self, load_dir):
         """ 
@@ -66,8 +81,8 @@ class AXXBCalibrator(object):
         """
         AX=XB solver.
         
-        @rtype  self.cam2ee: 4x4 numpy.ndarry
-        @return self.cam2ee: poses of the camera in the robot end-effector frame.
+        @rtype  self.calib_pose: 4x4 numpy.ndarry
+        @return self.calib_pose: target poses.
         """
         assert len(self.robot_poses) == len(self.marker_poses), 'robot poses and marker poses are not of the same length!'
 
@@ -84,8 +99,16 @@ class AXXBCalibrator(object):
         M = np.zeros((3, 3))
 
         for i in range(n-1):
-            A[:, :, i] = np.matmul(pose_inv(self.robot_poses[pose_inds[i+1]]), self.robot_poses[pose_inds[i]])
-            B[:, :, i] = np.matmul(self.marker_poses[pose_inds[i+1]], pose_inv(self.marker_poses[pose_inds[i]]))
+            if self.option == "EH":
+                A[:, :, i] = np.matmul(pose_inv(self.robot_poses[pose_inds[i+1]]), self.robot_poses[pose_inds[i]])
+                B[:, :, i] = np.matmul(self.marker_poses[pose_inds[i+1]], pose_inv(self.marker_poses[pose_inds[i]]))
+            elif self.option == "EBME":
+                A[:, :, i] = np.matmul(pose_inv(self.robot_poses[pose_inds[i+1]]), self.robot_poses[pose_inds[i]])
+                B[:, :, i] = np.matmul(pose_inv(self.marker_poses[pose_inds[i+1]]), self.marker_poses[pose_inds[i]])
+            elif self.option == "EBCB":
+                A[:, :, i] = np.matmul(self.robot_poses[pose_inds[i+1]], pose_inv(self.robot_poses[pose_inds[i]]))
+                B[:, :, i] = np.matmul(self.marker_poses[pose_inds[i+1]], pose_inv(self.marker_poses[pose_inds[i]]))
+
             alpha[:, i] = get_mat_log(A[:3, :3, i])
             beta[:, i] = get_mat_log(B[:3, :3, i])
             M += np.outer(beta[:, i], alpha[:, i])
@@ -113,25 +136,29 @@ class AXXBCalibrator(object):
 
         t = np.linalg.lstsq(I_Ra_Left, ta_Rtb_Right, rcond=-1)[0]
         
-        self.cam2ee = np.c_[R, t]
-        self.cam2ee = np.r_[self.cam2ee, [[0, 0, 0, 1]]]
+        self.calib_pose = np.c_[R, t]
+        self.calib_pose = np.r_[self.calib_pose, [[0, 0, 0, 1]]]
 
-        print ("Calibration Result:\n", self.cam2ee)
+        print ("Calibration Result:\n", self.calib_pose)
 
-        return self.cam2ee
+        return self.calib_pose
 
     def test(self):
         """ 
         Test the accuracy of the calculated result.
-        Use AXB to calculate the base2tag transformation for each frame.
+        Use AXB to calculate the check_pose transformation for each frame.
         """
         n = len(self.robot_poses)
         for i in range(n):
-            base2tag = np.matmul(np.matmul(self.robot_poses[i], self.cam2ee), self.marker_poses[i])
-            print("base2tag #{}".format(self.pose_indices[i]))
-            print(base2tag)
-            # print("cam2tag #{}".format(self.pose_indices[i]))
-            # print(self.robot_poses[i])
+            if self.option == "EH":
+                check_pose = np.matmul(np.matmul(self.robot_poses[i], self.calib_pose), self.marker_poses[i])
+            elif self.option == "EBME":
+                check_pose = np.matmul(np.matmul(self.robot_poses[i], self.calib_pose), pose_inv(self.marker_poses[i]))
+            elif self.option == "EBCB":
+                check_pose = np.matmul(np.matmul(pose_inv(self.robot_poses[i]), self.calib_pose), self.marker_poses[i])
+
+            print("check_pose #{}".format(self.pose_indices[i]))
+            print(check_pose)
             print("=========")
     
     def write_pose_file(self):
@@ -139,46 +166,38 @@ class AXXBCalibrator(object):
         Save the calibration file
         Calibration file is in (x,y,z) and (x,y,z,w) yaml file
         """
-        calibration_file = os.path.join(self.data_dir, 'camera_pose.yaml')
-        calibration_rotm_file = os.path.join(self.data_dir, 'camera_pose.txt')
+        calibration_file = os.path.join(self.data_dir, 'pose.yaml')
+        calibration_rotm_file = os.path.join(self.data_dir, 'pose.txt')
         
         with open(calibration_rotm_file, 'w') as file1:
-            for l in np.reshape(self.cam2ee, (16, )).tolist():
+            for l in np.reshape(self.calib_pose, (16, )).tolist():
                 file1.writelines(str(l) + ' ')
 
         pose = dict()
-        pose['cam_to_ee'] = dict()
-        pose['cam_to_ee']['translation'] = dict()
-        cam2ee_tran = np.array([self.cam2ee[0, -1], self.cam2ee[1, -1], self.cam2ee[2, -1]])
-        cam2ee_tran = cam2ee_tran.tolist()
-        pose['cam_to_ee']['translation']['x'] = cam2ee_tran[0]
-        pose['cam_to_ee']['translation']['y'] = cam2ee_tran[1]
-        pose['cam_to_ee']['translation']['z'] = cam2ee_tran[2]
+        pose[self.option_str] = dict()
+        pose[self.option_str]['translation'] = dict()
+        calib_pose_tran = np.array([self.calib_pose[0, -1], self.calib_pose[1, -1], self.calib_pose[2, -1]])
+        calib_pose_tran = calib_pose_tran.tolist()
+        pose[self.option_str]['translation']['x'] = calib_pose_tran[0]
+        pose[self.option_str]['translation']['y'] = calib_pose_tran[1]
+        pose[self.option_str]['translation']['z'] = calib_pose_tran[2]
 
-        cam2ee_rotm = self.cam2ee[0:3, 0:3]
+        calib_pose_rotm = self.calib_pose[0:3, 0:3]
 
-        assert cam2ee_rotm.shape == (3, 3)
-        cam2ee_quat = rotm2quat(cam2ee_rotm)
-        cam2ee_quat = cam2ee_quat.tolist()
+        assert calib_pose_rotm.shape == (3, 3)
+        calib_pose_quat = rotm2quat(calib_pose_rotm)
+        calib_pose_quat = calib_pose_quat.tolist()
 
-        print (cam2ee_quat)
+        print (calib_pose_quat)
 
-        pose['cam_to_ee']['quaternion'] = dict()
-        pose['cam_to_ee']['quaternion']['w'] = cam2ee_quat[0]
-        pose['cam_to_ee']['quaternion']['x'] = cam2ee_quat[1]
-        pose['cam_to_ee']['quaternion']['y'] = cam2ee_quat[2]
-        pose['cam_to_ee']['quaternion']['z'] = cam2ee_quat[3]
+        pose[self.option_str]['quaternion'] = dict()
+        pose[self.option_str]['quaternion']['w'] = calib_pose_quat[0]
+        pose[self.option_str]['quaternion']['x'] = calib_pose_quat[1]
+        pose[self.option_str]['quaternion']['y'] = calib_pose_quat[2]
+        pose[self.option_str]['quaternion']['z'] = calib_pose_quat[3]
 
         with open(calibration_file, 'w') as outfile:
             yaml.dump(pose, outfile, default_flow_style=False)
 
 
-if __name__ == "__main__":
-    
-    AXXBCalib = AXXBCalibrator()
-    AXXBCalib.load_xforms(data_dir)
 
-    cam2ee = AXXBCalib.axxb()
-
-    AXXBCalib.test()
-    AXXBCalib.write_pose_file()
