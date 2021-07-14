@@ -2,18 +2,29 @@ cmake_minimum_required(VERSION 3.0.2)
 project(calibration_toolbox)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  geometry_msgs
   roscpp
   rospy
-  sensor_msgs
   std_msgs
+  sensor_msgs
+  geometry_msgs
+  message_generation
+  joint_state_publisher
+  moveit_core
+  moveit_ros_planning
+  moveit_ros_planning_interface
+  moveit_msgs
+  moveit_visual_tools
+  robot_state_publisher
+  tf2_ros
   tf
+  cv_bridge
+  image_transport
   message_generation
 )
 
@@ -58,27 +69,28 @@ catkin_python_setup()
 # )
 
 # Generate services in the 'srv' folder
-add_service_files(
+# add_service_files(
+#   FILES
+#   DataCollect.srv
+#   IntMarkerCalibSave.srv
+#   HandEyeCalDataCollect.srv
+# )
+
+# Generate actions in the 'action' folder
+add_action_files(
   FILES
   CalibrateData.srv
   CollectData.srv
   MoveToJoint.srv
 )
 
-## Generate actions in the 'action' folder
-# add_action_files(
-#   FILES
-#   Action1.action
-#   Action2.action
-# )
-
 # Generate added messages and services with any dependencies listed here
-generate_messages(
-  DEPENDENCIES
-  geometry_msgs
-  sensor_msgs
-  std_msgs
-)
+ generate_messages(
+   DEPENDENCIES
+   std_msgs
+   sensor_msgs
+   geometry_msgs
+ )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -111,8 +123,8 @@ generate_messages(
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES aruco_calib
-#  CATKIN_DEPENDS geometry_msgs roscpp rospy sensor_msgs std_msgs
+#  LIBRARIES calibration_toolbox
+#  CATKIN_DEPENDS roscpp rospy std_msgs
 #  DEPENDS system_lib
 )
 
@@ -125,22 +137,26 @@ catkin_package(
 include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
+  ${PROJECT_SOURCE_DIRS}
+  ./include
 )
 
-## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/aruco_calib.cpp
-# )
+# Declare a C++ library
+add_library(panda src/panda.cpp)
+target_link_libraries(panda ${catkin_LIBRARIES})
+add_library(handeye_data_collector src/handeye_data_collector.cpp)
+target_link_libraries(handeye_data_collector ${catkin_LIBRARIES} panda)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
 # add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
-## Declare a C++ executable
-## With catkin_make all packages are built within a single CMake context
-## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/aruco_calib_node.cpp)
+# Declare a C++ executable
+# With catkin_make all packages are built within a single CMake context
+# The recommended prefix ensures that target names across packages don't collide
+add_executable(main_collector src/main_collector.cpp)
+target_link_libraries(main_collector handeye_data_collector panda)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -166,15 +182,18 @@ include_directories(
 
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
-# catkin_install_python(PROGRAMS
-#   scripts/my_python_script
-#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
-
-install(PROGRAMS
-  nodes/aruco_calibrate_server.py
+catkin_install_python(PROGRAMS
+  scripts/aruco_calibrate_server_node.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
+
+# install(PROGRAMS
+#   nodes/data_collect_server_node.py
+#   nodes/handeyecal_data_collect_server_node.py
+#   nodes/cam_to_world_broadcaster_node.py
+#   nodes/interactive_marker_calib.py
+#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+# )
 
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
@@ -209,7 +228,7 @@ install(PROGRAMS
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_aruco_calib.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_calibration_toolbox.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
