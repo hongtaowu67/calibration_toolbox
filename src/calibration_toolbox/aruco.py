@@ -1,8 +1,6 @@
-"""
-Get the transformation from marker to the camera.
-@author: Hongtao Wu
-Nov 15, 2019
-"""
+# Class to interact with the ArUco tag
+# Author: Hongtao Wu
+# Date: Nov 15, 2019
 
 import rospy
 import roslib
@@ -18,7 +16,9 @@ from cv_bridge import CvBridge
 from cv_bridge import CvBridgeError
 
 
-class ArUco:
+class ArUco(object):
+    """Class to interact with ArUco tag."""
+
     def __init__(self):
         self.pose_topic = "/aruco_single/pose"
         self.aruco_img_topic = "/aruco_single/result"
@@ -42,8 +42,9 @@ class ArUco:
         self.mutex = Lock()
         self._bridge = CvBridge()
 
-
     def _poseInfoCb(self, msg):
+        """Pose callback function."""
+
         if msg is None:
             rospy.logwarn("_poseInfoCb: msg is None!")
         
@@ -58,8 +59,9 @@ class ArUco:
             self.pos = np.array([self.pose_x, self.pose_y, self.pose_z])
             self.orn = np.array([self.pose_qw, self.pose_qx, self.pose_qy, self.pose_qz])
 
-
     def _arucoimgCb(self, msg):
+        """Image callback function."""
+
         if msg is None:
             rospy.logwarn("_arucoimgCb: msg is None !!!!!!!!!")
         try:
@@ -79,8 +81,9 @@ class ArUco:
         except CvBridgeError as e:
             rospy.logwarn(str(e))
 
-
     def get_pose(self):
+        """Get the pose of the current frame."""
+
         pos = None
         orn = None
         aruco_img = None

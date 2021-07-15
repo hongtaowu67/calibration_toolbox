@@ -1,21 +1,21 @@
 # Class to interact with Panda
+# Author: Hongtao Wu, Xin Meng
+# National University of Singapore
+# Date: July 15, 2021
 
 import numpy as np
 
 import rospy
-import tf2_ros
-
 import std_msgs.msg
 
-from aruco_calib.srv import *
+from calibration_toolbox.srv import *
 
 class PandaRobot(object):
-    """
-    class used to interact with the Panda robot
-    """
+    """Class used to interact with the Panda robot"""
+
     def __init__(self, base_frame="panda_link0", ee_frame="panda_hand", go_home=True, load_gripper=False):
         
-        rospy.loginfo("Start setting up the panda robot")
+        rospy.loginfo("Start setting up the panda robot. Robot will move home...")
 
         # Home configuration
         self.home_config = [0.0, -np.pi/4, 0.0, -2*np.pi/3, 0.0, np.pi/3, np.pi/4]
@@ -27,20 +27,23 @@ class PandaRobot(object):
         self.setupMoveToJointClient()
 
         if go_home:
-            # Move robot home
             self.goHome()
+        
+        rospy.loginfo("Finish setting up the robot...")
 
     def setupMoveToJointClient(self):
+        """Set up the ROS client."""
+
         rospy.loginfo("Start setting up MoveToJoint client...")
         rospy.wait_for_service("move_to_joint")
         self.move_joint_client = rospy.ServiceProxy("move_to_joint", MoveToJoint)
         rospy.loginfo("Finish setting up MoveToJoint client...")
 
     def moveToJointPosition(self, joint_config):
-        """
-        Call the move_to_joint client to move the robot
+        """Call the move_to_joint client to move the robot
         
-        joint_config (list of 7): joint configuration
+        Args:
+            joint_config (list of 7): joint configuration
         """
         ros_joint_config = std_msgs.msg.Float64MultiArray()
         ros_joint_config.data = joint_config
@@ -50,19 +53,6 @@ class PandaRobot(object):
             rospy.login("Service call failed: %s" % e)
 
     def goHome(self):
-        """
-        Move to Home configuration
-        """
+        """Move to Home configuration"""
+
         self.moveToJointPosition(self.home_config)
-
-    # def moveToPose(self, pos, orn):
-    #     if orn is None:
-    #         config = tuple(pos + [0, np.pi, 0])
-    #         transform = self.moveToJointPosition(config)
-    #     else:
-    #         config = tuple(pos + orn)
-    #         transform = self.moveToJointPosition(config)
-        
-    #     rospy.sleep(self.sleep_time)
-
-    #     return transform
