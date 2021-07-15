@@ -1,5 +1,6 @@
 # Class to interact with Panda
 # Author: Hongtao Wu, Xin Meng
+# Johns Hopkins University
 # National University of Singapore
 # Date: July 15, 2021
 

@@ -1,5 +1,7 @@
 #! /usr/bin/python
 
+# Main script to run the data collector for ArUco calibrator
+
 import rospy
 
 from calibration_toolbox.aruco_calib_collector import ArucoCalibrateCollector

@@ -1,5 +1,6 @@
 // Panda Robot
 // Author: Hongtao Wu
+// Johns Hopkins University
 // Jan 12, 2021
 
 #include "panda.h"

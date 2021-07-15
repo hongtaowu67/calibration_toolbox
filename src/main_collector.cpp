@@ -1,4 +1,6 @@
 // Main script to collect data
+// Author: Hongtao Wu
+// Johns Hopkins University
 
 #include "handeye_data_collector.cpp"
 

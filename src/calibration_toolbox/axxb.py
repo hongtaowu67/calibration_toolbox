@@ -1,14 +1,14 @@
 # AXXB solver
 # Author: Hongtao Wu
 # Johns Hopkins University
-# Apr 09, 2021
+# Date: Apr 09, 2021
 
 from __future__ import print_function, division
 import numpy as np
 import os
 import yaml
 
-from utils import *
+from calibration_toolbox.utils import *
 
 class AXXBCalibrator(object):
     """
@@ -33,11 +33,11 @@ class AXXBCalibrator(object):
         self.option_list = ["EBCB", "EBME", "EH"]
         assert self.option in self.option_list, "Option should be EBCB, EBME, or EH!"
 
-        if self.option is "EBCB":
+        if self.option == "EBCB":
             self.option_str = "cam_to_base"
-        elif self.option is "EBME":
+        elif self.option == "EBME":
             self.option_str = "marker_to_ee"
-        elif self.option is "EH":
+        elif self.option == "EH":
             self.option_str = "cam_to_ee"
     
     def load_xforms(self, load_dir):
@@ -64,7 +64,7 @@ class AXXBCalibrator(object):
                 # tool pose in robot base frame
                 with open(os.path.join(load_dir, robot_pose_file), 'r') as file_robot:
                     robotpose_str = file_robot.readline().split(' ')
-                    robotpose = [float (x) for x in robotpose_str if x is not '']
+                    robotpose = [float (x) for x in robotpose_str if x != '']
                     assert len(robotpose) == 16
                     robotpose = np.reshape(np.array(robotpose), (4, 4))
                 self.robot_poses.append(robotpose)
@@ -72,7 +72,7 @@ class AXXBCalibrator(object):
                 # marker pose in camera frame
                 with open(os.path.join(load_dir, marker_pose_file), 'r') as file_marker:
                     markerpose_str = file_marker.readline().split(' ')
-                    markerpose = [float(x) for x in markerpose_str if x is not '']
+                    markerpose = [float(x) for x in markerpose_str if x != '']
                     assert len(markerpose) == 16
                     markerpose = np.reshape(np.array(markerpose), (4, 4))
                 self.marker_poses.append(markerpose)
@@ -188,8 +188,6 @@ class AXXBCalibrator(object):
         calib_pose_quat = rotm2quat(calib_pose_rotm)
         calib_pose_quat = calib_pose_quat.tolist()
 
-        print (calib_pose_quat)
-
         pose[self.option_str]['quaternion'] = dict()
         pose[self.option_str]['quaternion']['w'] = calib_pose_quat[0]
         pose[self.option_str]['quaternion']['x'] = calib_pose_quat[1]
@@ -198,6 +196,5 @@ class AXXBCalibrator(object):
 
         with open(calibration_file, 'w') as outfile:
             yaml.dump(pose, outfile, default_flow_style=False)
-
-
-
+        
+        print("Finish writing to {}".format(calibration_file))
