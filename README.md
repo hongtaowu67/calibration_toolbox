@@ -81,3 +81,4 @@ If the calibration is successful, they should be very close to each other.
 
 ## TODO
 - [ ] Test different calibration options
+- [ ] Add support for the ArUco tag data collector

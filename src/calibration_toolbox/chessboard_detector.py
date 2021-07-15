@@ -1,7 +1,7 @@
 # Detecting chessboard in the data
 # Author: Hongtao Wu
 # Johns Hopkins University
-# Apr 09, 2021
+# Date: Apr 09, 2021
 
 from __future__ import print_function
 import os
