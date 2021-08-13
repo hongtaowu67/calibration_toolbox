@@ -24,7 +24,7 @@ from calibration_toolbox.srv import *
 
 class CalibrateCollector(object):
     
-    def __init__(self, target, calib_points_file):
+    def __init__(self, target, calib_points_file, image_topic):
         """If the target is chessboard, only images and robot poses will be collected.
         The pose of the chess board will be detected later using the chessboard_detector.py
         If the target is aruco, images, marker poses, and robot poses will be collected.
@@ -32,11 +32,13 @@ class CalibrateCollector(object):
         Args:
             target (string): chessboard / aruco
             calib_points_file (string): files of points for calibration
+            image_topic (string): ros topic for the image source
         """
         rospy.loginfo("Make sure to roslaunch realsense2_camera rs_camera.launch before running this code!")
         rospy.loginfo("Make sure to roslaunch panda_moveit_config panda_control_moveit_rviz.launch robot_ip:=<robot_ip> load_gripper:=<true/false>")
 
         self.target = target
+        self.image_topic = image_topic
 
         # Load calib_points
         self.calib_points = np.loadtxt(calib_points_file)
@@ -129,7 +131,7 @@ class CalibrateCollector(object):
         if self.target is 'aruco':
             self.camera_handler = ArUco()
         else:
-            self.camera_handler = ROSCamera()
+            self.camera_handler = ROSCamera(image_topic=self.image_topic)
 
         time.sleep(0.5)
     

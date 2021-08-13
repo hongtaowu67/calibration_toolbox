@@ -18,7 +18,7 @@ from cv_bridge import CvBridgeError
 
 class ROSCamera(object):
 
-    def __init__(self, img_topic='/camera/color/image_raw'):
+    def __init__(self, img_topic):
         """Class to interact with a cameara in ROS
 
         Args:
@@ -33,20 +33,19 @@ class ROSCamera(object):
         self.mutex = Lock()
         self._bridge = CvBridge()
 
+        rospy.loginfo("ROS camera is ready")
+
     def _imgCb(self, msg):
         """Image callback function."""
 
         if msg is None:
-            rospy.logwarn("_arucoimgCb: msg is None !!!!!!!!!")
+            rospy.logwarn("_imgCb: msg is None !!!!!!!!!")
         try:
-            # max out at 10 hz assuming 30hz data source
-            if msg.header.seq % 3 == 0:
-                cv_image = self._bridge.imgmsg_to_cv2(msg, "rgb8")
+            cv_image = self._bridge.imgmsg_to_cv2(msg, "rgb8")
+            cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
 
-                cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
-
-                with self.mutex:
-                    self.img = cv_image
+            with self.mutex:
+                self.img = cv_image
 
         except CvBridgeError as e:
             rospy.logwarn(str(e))
