@@ -181,6 +181,7 @@ target_link_libraries(main_collector handeye_data_collector panda)
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
+  scripts/calib_collector_server_node.py
   scripts/aruco_calib_collector_server_node.py
   scripts/main_calib_node.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
