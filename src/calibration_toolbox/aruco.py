@@ -1,5 +1,6 @@
 # Class to interact with the ArUco tag
 # Author: Hongtao Wu
+# Johns Hopkins University
 # Date: Nov 15, 2019
 
 import rospy

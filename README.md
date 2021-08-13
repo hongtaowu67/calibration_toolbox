@@ -18,6 +18,7 @@ To setup the connection of RGBD camera, please refer to [this repository](https:
 ```
 pip install opencv-python
 ```
+* [aruco_ros](https://github.com/pal-robotics/aruco_ros): for aruco marker tracking
 
 ## Intrinsic Calibration
 To calibrate instrinsic, follow the instruction [here](http://wiki.ros.org/openni_launch/Tutorials/IntrinsicCalibration). If the camera is an RGBD camera, make sure to calibrate both the RGB and IR camera.
@@ -78,6 +79,41 @@ python main_calibrate.py
 The calibrated transformation will be saved in the data directory as ```pose.txt``` and ```pose.yaml```. 
 Make sure to check each of the check pose in the terminal.
 If the calibration is successful, they should be very close to each other.
+
+## Data Collection (for EBME with Panda robot)
+1. Print the [aruco marker](https://chev.me/arucogen/)
+2. Attach the marker onto a flat rigid surface of the object.
+3. Move the hand to grasp the object.
+4. Move the robot to at least 15 configurations. Make sure in each configuraton, the camera can see the whole marker.
+5. Initialize the camera. To initialize RealSense D435,
+```
+roslaunch realsense2_camera rs_camera.launch
+```
+To check the image of the camera
+```
+rosrun image_view image_view image:=/camera/rgb/image_raw
+```
+6. Start the '''single''' node of '''aruco_ros''' to track the specified marker
+```
+roslaunch aruco_ros single.launch markerId:=<marker_id> markerSize:=<marker_size in meter>
+```
+Check the topic name of camera info and image in launch file before running.
+7. Launch the Panda robot
+```
+roslaunch panda_moveit_config panda_control_moveit_rviz.launch robot_ip:=<robot_ip> load_gripper:=<true/false>
+```
+8. Run the [panda control server node](https://github.com/ChirikjianLab/panda_moveit_ctrl)
+```
+rosrun panda_moveit_ctrl panda_moveit_ctrl_server_node.py
+```
+9. Run the aruco calib collector server
+```
+rosrun calibration_toolbox aruco_calib_collector_server_node.py 
+```
+10. Request a service to collect data:
+```
+rosservice call /collect_data <data_directory>
+```
 
 ## TODO
 - [ ] Test different calibration options

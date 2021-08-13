@@ -14,7 +14,7 @@ if __name__ == "__main__":
     rospy.init_node("main_calib_node", anonymous=True)
     
     # Data directory for saving the captured data
-    data_dir = "/home/raya/Dropbox/140721_panda_rs"
+    data_dir = "//home/raya/Dropbox/070821_panda_ps_ebme"
 
     # Calibration option
     #"EBCB" (eye-on-base, get camera to base), 

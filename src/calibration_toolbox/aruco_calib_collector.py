@@ -23,7 +23,7 @@ from calibration_toolbox.srv import *
 
 class ArucoCalibrateCollector(object):
     
-    def __init__(self, calib_point_num=15):
+    def __init__(self, calib_point_num=31):
         rospy.loginfo("Make sure to roslaunch realsense2_camera rs_camera.launch before running this code!")
         rospy.loginfo("Make sure to roslaunch aruco_ros single.launch markerId:=<markerId> markerSize:=<markerSize>")
         rospy.loginfo("Make sure to roslaunch panda_moveit_config panda_control_moveit_rviz.launch robot_ip:=<robot_ip> load_gripper:=<true/false>")
@@ -53,23 +53,40 @@ class ArucoCalibrateCollector(object):
         # and read the value with ./path/to/libfranka/build/examples/echo_robot_state <robot_ip>
 
         # panda with RS
-        self.calib_joint_configs = []
-        self.calib_joint_configs.append([-0.146975,0.635671,0.184451,-1.38386,0.0205211,3.00829,0.265557])
-        self.calib_joint_configs.append([-0.171785,0.634595,0.183138,-1.38399,0.0274045,2.99998,0.507089])
-        self.calib_joint_configs.append([-0.236165,0.625268,0.263404,-1.41085,0.248626,2.99773,0.510317])
-        self.calib_joint_configs.append([-0.262306,0.625756,0.305554,-1.41413,0.424335,2.99442,0.520265])
-        self.calib_joint_configs.append([-0.488863,0.814713,0.694643,-1.36112,0.303203,3.17385,1.45979])
-        self.calib_joint_configs.append([-0.517351,0.795696,0.734402,-1.51093,0.315584,3.45465,1.46796])
-        self.calib_joint_configs.append([-0.435564,0.757529,0.66653,-1.59285,0.301739,3.64884,1.566])
-        self.calib_joint_configs.append([0.329533,0.708727,-0.24378,-1.50073,0.799596,3.59342,1.79216])
-        self.calib_joint_configs.append([0.630784,0.765141,-0.655252,-1.60885,0.817361,3.59371,1.91854])
-        self.calib_joint_configs.append([0.53397,1.08556,-0.728472,-1.229,0.81158,3.59576,1.80689])
-        self.calib_joint_configs.append([-0.030525,0.931611,0.157928,-1.12151,0.531689,3.46992,1.68935])
-        self.calib_joint_configs.append([-0.471302,1.02723,0.797877,-1.23677,0.00838211,3.46727,1.70088])
-        self.calib_joint_configs.append([-0.759316,1.00404,1.01275,-1.54098,-0.215028,3.46683,1.70687])
-        self.calib_joint_configs.append([-0.826864,1.23562,1.24963,-1.49232,-0.221334,3.46774,1.7015])
-        self.calib_joint_configs.append([-0.538093,1.38998,1.23818,-1.03671,-0.237198,3.48952,1.54483])
+        # self.calib_joint_configs = []
+        # self.calib_joint_configs.append([0.829402,-0.830306,-0.955126,-2.30334,0.202149,2.84722,0.371086])
+        # self.calib_joint_configs.append([0.708371,-0.625007,-0.837845,-2.2098,0.204379,2.75336,0.384986])
+        # self.calib_joint_configs.append([0.331349,-0.419167,-0.502453,-2.20837,0.288984,2.83689,0.425098])
+        # self.calib_joint_configs.append([0.00384433,-0.381613,-0.204643,-2.22471,0.288779,2.84424,0.414743])
+        # self.calib_joint_configs.append([-0.397768,-0.412427,0.165338,-2.22101,0.337444,2.76917,0.430895])
+        # self.calib_joint_configs.append([-0.712382,-0.486738,0.450862,-2.2542,0.38736,2.76911,0.425198])
+        # self.calib_joint_configs.append([-1.05852,-0.507805,0.756403,-2.17156,0.492114,2.76529,0.410753])
+        # self.calib_joint_configs.append([-1.04658,-0.584379,0.822992,-2.34864,0.647245,3.09791,0.426993])
+        # self.calib_joint_configs.append([-0.739075,-0.523928,0.583049,-2.41125,0.640788,3.15315,0.386228])
+        # self.calib_joint_configs.append([-0.249173,-0.513014,0.133767,-2.48405,0.640839,3.17061,0.312543])
+        # self.calib_joint_configs.append([0.463652,-0.604758,-0.540549,-2.47571,0.502429,3.23987,0.258027])
+        # self.calib_joint_configs.append([0.798493,-0.780569,-0.858468,-2.44979,0.444323,3.24063,0.190954])
+        # self.calib_joint_configs.append([1.00837,-0.972864,-1.01867,-2.38373,0.467672,3.15598,0.38312])
+        # self.calib_joint_configs.append([1.10153,-0.989677,-1.06994,-2.3485,0.467837,3.20543,0.889421])
+        # self.calib_joint_configs.append([1.2227,-1.33822,-1.14429,-2.35385,0.422949,3.11821,1.48888])
+        # self.calib_joint_configs.append([1.36922,-1.58185,-1.07577,-2.55801,0.403564,3.68637,1.87198])
+        # self.calib_joint_configs.append([1.08673,-1.1105,-1.13312,-2.25823,-2.71144,2.82304,2.75649])
+        # self.calib_joint_configs.append([0.973297,-1.06328,-1.03306,-2.37245,-2.48352,2.6808,2.66558])
+        # self.calib_joint_configs.append([1.19078,-1.47857,-1.01678,-2.54689,-2.50715,2.19507,2.30742])
+        # self.calib_joint_configs.append([1.40047,-1.72799,-1.03042,-2.63971,-2.72201,1.81759,2.05533])
+        # self.calib_joint_configs.append([1.49983,-1.72976,-1.06856,-2.62111,-2.86228,1.68168,2.03683])
+        # self.calib_joint_configs.append([1.56286,-1.75434,-1.04047,-2.61007,-2.83381,1.61209,2.0615])
+        # self.calib_joint_configs.append([1.25359,-1.65926,-1.49284,-2.42242,-1.33679,3.52806,0.902418])
+        # self.calib_joint_configs.append([1.48087,-1.71305,-1.44124,-2.42384,-0.817547,3.70196,1.47299])
+        # self.calib_joint_configs.append([0.683883,-0.680211,-0.693401,-2.4725,-2.50852,2.31934,2.43279])
+        # self.calib_joint_configs.append([-0.406396,-0.656666,0.329129,-2.62292,-2.46446,2.35652,2.48868])
+        # self.calib_joint_configs.append([-1.08301,-0.955662,0.955488,-2.644,-2.46972,2.35697,2.50807])
+        # self.calib_joint_configs.append([-1.32729,-0.968222,1.11532,-2.50242,-2.50447,2.37501,2.60316])
+        # self.calib_joint_configs.append([-1.51469,-1.30904,1.25157,-2.50609,-2.5042,2.37567,2.66389])
+        # self.calib_joint_configs.append([-1.61974,-1.69242,1.33846,-2.58355,-2.50497,2.37295,2.58779])
+        # self.calib_joint_configs.append([-1.74043,-1.63069,1.27608,-2.5074,-2.82839,2.22068,2.73851])
 
+        self.calib_point_num = len(self.calib_joint_configs)
 
         self.robot_poses = []
         self.marker_poses = []
@@ -125,6 +142,7 @@ class ArucoCalibrateCollector(object):
         
         epsilon = 0.05 # randomness for sampling orientation
         complete_point_num = 0
+        rospy.loginfo(self.calib_point_num)
         
         while complete_point_num < self.calib_point_num:
             print ("Pose index: ", complete_point_num)
@@ -165,7 +183,7 @@ class ArucoCalibrateCollector(object):
             
             time.sleep(1)
 
-        self.robot.goHome()
+        # self.robot.goHome()
         return CollectDataResponse("Successfully collect data! Proceed to calibrate data.")
 
     def run(self):

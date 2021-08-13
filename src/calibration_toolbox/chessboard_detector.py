@@ -12,7 +12,7 @@ import yaml
 from utils import *
 
 # Camera info
-camera_info_yaml = "/home/hongtao/.ros/camera_info/rgb_PS1080_PrimeSense.yaml"
+camera_info_yaml = "/home/raya/.ros/camera_info/rgb_PS1080_PrimeSense.yaml"
 
 # Chessboard pattern
 width = 0.029
@@ -20,7 +20,7 @@ x_num = 5
 y_num = 7
 
 # Data directory for saving the calibration data
-data_dir = "/home/hongtao/Desktop/041321_panda_ps"
+data_dir = "/home/raya/Dropbox/070821_panda_rs_eh_down"
 
 # Visualized axis on the data
 axis = np.float32([[0, 0, 0], [3*width,0,0], [0,3*width,0], [0,0,3*width]]).reshape(-1,3)
@@ -102,11 +102,15 @@ def chessboard_pose(img_dir, img_filename, cam_mtx, cam_dist, objp, pattern=(7, 
 
 
 if __name__ == "__main__":
-    with open(camera_info_yaml, 'r') as f:
-        doc = yaml.load(f)
-        cam_mtx = np.array(doc['camera_matrix']['data']).reshape(3, 3)
-        cam_dist = np.array(doc['distortion_coefficients']['data'])
-    
+    # with open(camera_info_yaml, 'r') as f:
+    #     doc = yaml.load(f)
+    #     cam_mtx = np.array(doc['camera_matrix']['data']).reshape(3, 3)
+    #     cam_dist = np.array(doc['distortion_coefficients']['data'])
+    cam_mtx = np.array([615.2091064453125, 0.0, 325.8149719238281, 0.0, 615.3001708984375, 236.04461669921875, 0.0, 0.0, 1.0])
+    cam_dist = np.array([0.0, 0.0, 0.0, 0.0, 0.0])
+
+    cam_mtx = cam_mtx.reshape(3, 3)
+
     print ("cam_mtx")
     print (cam_mtx)
     print("------------")
