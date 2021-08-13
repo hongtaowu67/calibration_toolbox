@@ -83,7 +83,9 @@ void HandeyeDataCollector::saveCurrentData(
                 << 1 << " ";
     
     // Write image data
-    cv::imwrite(img_path, _cv_img_ptr->image);
+    cv::Mat image;
+    cv::cvtColor(_cv_img_ptr->image, image, cv::COLOR_BRG2RGB);
+    cv::imwrite(img_path, image);
 
     ROS_INFO("Finish saving pose results to %s", pose_path.c_str());
     ROS_INFO("Finish saving image results to %s", img_path.c_str());
