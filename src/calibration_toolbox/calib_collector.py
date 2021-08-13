@@ -146,35 +146,30 @@ class CalibrateCollector(object):
             time.sleep(3)
 
             if self.target is 'aruco':
-                # Marker Pose
+                # Marker Pose and Image
                 marker_pose, aruco_img = self.get_marker_2_cam()
 
                 if marker_pose is not None:
                     # Robot Pose
                     transform_ros = self.tfBuffer.lookup_transform(self.base_frame_name, self.ee_frame_name, rospy.Time(0))
-                    # print ("Ros transform: ", transform_ros)
 
                     pos_ros = transform_ros.transform.translation
                     quat_ros = transform_ros.transform.rotation
 
                     robot_pos = np.array([pos_ros.x, pos_ros.y, pos_ros.z])
-                    # print ("Ros robot position")
-                    # print (robot_pos)
                     robot_quat = np.array([quat_ros.w, quat_ros.x, quat_ros.y, quat_ros.z])
                     robot_rotm = quat2rotm(robot_quat)
-                    # print ("Ros robot rotation matrix")
-                    # print (robot_rotm)
                     robot_pose = make_rigid_transformation(robot_pos, robot_rotm)
 
-                    print ("===============================")
-
                     self.save_transforms_to_file_aruco(req.data_path, complete_point_num, robot_pose, marker_pose, aruco_img)
-            
                     complete_point_num += 1
+
+                    print ("===============================")
                 else:
                     print ("Marker pose is None! The camera probably cannot see it!")
             
             else:
+                # Image
                 chessboard_img = self.camera_handler.get_img()
 
                 time.sleep(0.5)
@@ -182,29 +177,22 @@ class CalibrateCollector(object):
                 if chessboard_img is not None:
                     # Robot Pose
                     transform_ros = self.tfBuffer.lookup_transform(self.base_frame_name, self.ee_frame_name, rospy.Time(0))
-                    # print ("Ros transform: ", transform_ros)
 
                     pos_ros = transform_ros.transform.translation
                     quat_ros = transform_ros.transform.rotation
 
                     robot_pos = np.array([pos_ros.x, pos_ros.y, pos_ros.z])
-                    # print ("Ros robot position")
-                    # print (robot_pos)
                     robot_quat = np.array([quat_ros.w, quat_ros.x, quat_ros.y, quat_ros.z])
                     robot_rotm = quat2rotm(robot_quat)
-                    # print ("Ros robot rotation matrix")
-                    # print (robot_rotm)
                     robot_pose = make_rigid_transformation(robot_pos, robot_rotm)
 
+                    self.save_transforms_to_file_aruco(req.data_path, complete_point_num, robot_pose, chessboard_img)
+                    complete_point_num += 1
+
                     print ("===============================")
-
-        self.save_transforms_to_file_aruco(req.data_path, complete_point_num, robot_pose, chessboard_img)
-
-
             
             time.sleep(1)
 
-        # self.robot.goHome()
         return CollectDataResponse("Successfully collect data! Proceed to calibrate data.")
 
     def run(self):
