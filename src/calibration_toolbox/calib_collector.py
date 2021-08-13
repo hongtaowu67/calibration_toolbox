@@ -41,7 +41,7 @@ class CalibrateCollector(object):
         self.image_topic = image_topic
 
         # Load calib_points
-        self.calib_points = np.loadtxt(calib_points_file)
+        self.calib_points = np.loadtxt(calib_points_file, delimiter=',')
         self.calib_points_num = self.calib_points.shape[0]
 
         # Specify the names of the frames in TF
@@ -131,7 +131,7 @@ class CalibrateCollector(object):
         if self.target is 'aruco':
             self.camera_handler = ArUco()
         else:
-            self.camera_handler = ROSCamera(image_topic=self.image_topic)
+            self.camera_handler = ROSCamera(img_topic=self.image_topic)
 
         time.sleep(0.5)
     
@@ -147,7 +147,7 @@ class CalibrateCollector(object):
 
             time.sleep(3)
 
-            if self.target is 'aruco':
+            if self.target == 'aruco':
                 # Marker Pose and Image
                 marker_pose, aruco_img = self.get_marker_2_cam()
 
@@ -188,7 +188,7 @@ class CalibrateCollector(object):
                     robot_rotm = quat2rotm(robot_quat)
                     robot_pose = make_rigid_transformation(robot_pos, robot_rotm)
 
-                    self.save_transforms_to_file_aruco(req.data_path, complete_point_num, robot_pose, chessboard_img)
+                    self.save_transforms_to_file_chessboard(req.data_path, complete_point_num, robot_pose, chessboard_img)
                     complete_point_num += 1
 
                     print ("===============================")
