@@ -14,13 +14,13 @@ if __name__ == "__main__":
     rospy.init_node("main_calib_node", anonymous=True)
     
     # Data directory for saving the captured data
-    data_dir = "/home/raya/Dropbox/140821_panda_ps_EBCB2"
+    data_dir = "/home/raya/Dropbox/140821_panda_ps_EBME"
 
     # Calibration option
     #"EBCB" (eye-on-base, get camera to base), 
     #"EBME" (eye-on-base, get marker in ee), 
     #"EH" (eye-on-hand, get ee to camera)
-    option = "EBCB"
+    option = "EBME"
 
     AXXBCalib = AXXBCalibrator(option)
     AXXBCalib.load_xforms(data_dir)
