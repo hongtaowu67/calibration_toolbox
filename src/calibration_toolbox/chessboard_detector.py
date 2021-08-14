@@ -15,12 +15,12 @@ from utils import *
 camera_info_yaml = "/home/raya/.ros/camera_info/rgb_PS1080_PrimeSense.yaml"
 
 # Chessboard pattern
-width = 0.029
-x_num = 5
-y_num = 7
+width = 0.038
+x_num = 4
+y_num = 5
 
 # Data directory for saving the calibration data
-data_dir = "/home/raya/Dropbox/070821_panda_rs_eh_down"
+data_dir = "/home/raya/Dropbox/140821_panda_ps_EBCB"
 
 # Visualized axis on the data
 axis = np.float32([[0, 0, 0], [3*width,0,0], [0,3*width,0], [0,0,3*width]]).reshape(-1,3)
