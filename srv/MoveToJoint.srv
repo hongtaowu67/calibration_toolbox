@@ -1,0 +1,3 @@
+std_msgs/Float64MultiArray joint_config
+---
+string status

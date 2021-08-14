@@ -1,7 +1,7 @@
 # Detecting chessboard in the data
 # Author: Hongtao Wu
 # Johns Hopkins University
-# Apr 09, 2021
+# Date: Apr 09, 2021
 
 from __future__ import print_function
 import os
@@ -12,15 +12,20 @@ import yaml
 from utils import *
 
 # Camera info
-camera_info_yaml = "/home/hongtao/.ros/camera_info/rgb_PS1080_PrimeSense.yaml"
+camera_info_yaml = "/home/raya/.ros/camera_info/rgb_PS1080_PrimeSense.yaml"
+# camera_info_yaml = "/home/raya/.ros/camera_info/RealSense_D435_handle.yaml"
+
 
 # Chessboard pattern
-width = 0.029
-x_num = 5
-y_num = 7
+# width = 0.038
+# x_num = 4
+# y_num = 5
+width = 0.010
+x_num = 4
+y_num = 4
 
 # Data directory for saving the calibration data
-data_dir = "/home/hongtao/Desktop/041321_panda_ps"
+data_dir = "/home/raya/Dropbox/140821_panda_ps_EBME"
 
 # Visualized axis on the data
 axis = np.float32([[0, 0, 0], [3*width,0,0], [0,3*width,0], [0,0,3*width]]).reshape(-1,3)
@@ -106,7 +111,10 @@ if __name__ == "__main__":
         doc = yaml.load(f)
         cam_mtx = np.array(doc['camera_matrix']['data']).reshape(3, 3)
         cam_dist = np.array(doc['distortion_coefficients']['data'])
-    
+
+
+    cam_mtx = cam_mtx.reshape(3, 3)
+
     print ("cam_mtx")
     print (cam_mtx)
     print("------------")
@@ -131,6 +139,8 @@ if __name__ == "__main__":
         if ".png" in fname:
             print (fname)
             R, t = chessboard_pose(data_dir, fname, cam_mtx, cam_dist, objp, pattern)
+            if R is None:
+                continue
             pose = make_rigid_transformation(t, R)
 
             img_idx = fname.split('_')[0]

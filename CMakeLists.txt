@@ -22,8 +22,10 @@ find_package(catkin REQUIRED COMPONENTS
   moveit_visual_tools
   robot_state_publisher
   tf2_ros
+  tf
   cv_bridge
   image_transport
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -67,18 +69,17 @@ catkin_python_setup()
 # )
 
 # Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   DataCollect.srv
-#   IntMarkerCalibSave.srv
-#   HandEyeCalDataCollect.srv
-# )
+add_service_files(
+  FILES
+  CalibrateData.srv
+  CollectData.srv
+  MoveToJoint.srv
+)
 
-## Generate actions in the 'action' folder
+# Generate actions in the 'action' folder
 # add_action_files(
 #   FILES
-#   Action1.action
-#   Action2.action
+ 
 # )
 
 # Generate added messages and services with any dependencies listed here
@@ -139,10 +140,10 @@ include_directories(
 )
 
 # Declare a C++ library
-add_library(panda src/panda.cpp)
-target_link_libraries(panda ${catkin_LIBRARIES})
-add_library(handeye_data_collector src/handeye_data_collector.cpp)
-target_link_libraries(handeye_data_collector ${catkin_LIBRARIES} panda)
+# add_library(panda src/panda.cpp)
+# target_link_libraries(panda ${catkin_LIBRARIES})
+# add_library(handeye_data_collector src/handeye_data_collector.cpp)
+# target_link_libraries(handeye_data_collector ${catkin_LIBRARIES} panda)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -152,8 +153,8 @@ target_link_libraries(handeye_data_collector ${catkin_LIBRARIES} panda)
 # Declare a C++ executable
 # With catkin_make all packages are built within a single CMake context
 # The recommended prefix ensures that target names across packages don't collide
-add_executable(main_collector src/main_collector.cpp)
-target_link_libraries(main_collector handeye_data_collector panda)
+# add_executable(main_collector src/main_collector.cpp)
+# target_link_libraries(main_collector handeye_data_collector panda)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -179,10 +180,12 @@ target_link_libraries(main_collector handeye_data_collector panda)
 
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
-# catkin_install_python(PROGRAMS
-#   scripts/my_python_script
-#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+catkin_install_python(PROGRAMS
+  scripts/calib_collector_server_node.py
+  # scripts/aruco_calib_collector_server_node.py
+  scripts/main_calib_node.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 # install(PROGRAMS
 #   nodes/data_collect_server_node.py

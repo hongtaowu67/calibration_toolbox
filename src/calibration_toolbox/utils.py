@@ -1,3 +1,7 @@
+# Utility functions
+# Author: Hongtao Wu
+# Johns Hopkins University
+
 import numpy as np
 import yaml
 from yaml import CLoader
