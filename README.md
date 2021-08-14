@@ -39,82 +39,63 @@ There are 3 options of calibration:
 ### Data Collection (for EH with Panda robot)
 In the data collection part, the robot moves to different configurations and collects the transformation from the hand (end effector) to base and the corresponding transformation from camera to chessboard.
 
-1. Print the calibration chessboard in **doc/chessboard_A4.pdf** (**doc/chessboard_letter.pdf**) if you are using A4 (letter) paper. The size of each square is 29mm in chessboard_A4.pdf and 25.6mm in chessboard_letter.pdf.
-2. Attach the chessboard onto a flat rigid plate and fix it on the table.
+1. Generate and print the [calibration chessboard](https://calib.io/pages/camera-calibration-pattern-generator) or [aruco marker](https://chev.me/arucogen/). In our ```EBCM``` calibration, the grid size is 0.038mm, the number of columns and rows are 5 and 6. In our ```EH``` calibration, the grid size is 0.029mm, the number of columns and rows are 6 and 8. In our ```EBME``` calibration, the grid size is 0.010mm, the number of columns and rows are 5.
+2. Attach the chessboard onto a flat rigid plate and fix it on: the end effector of the robot for ```EBCB```, table for ```EH```, and hand for ```EBME```.
 3. Move the robot to at least 15 configurations. Make sure in each configuration, the camera can see the whole chessboard and the chessboard is LARGE. Because if the chessboard is too small, the estimation of pose will be inaccurate.
-4. In **src/main_collector.cpp**, specify the data saving directory and the configurations you collected.
-5. In **src/main_collector.cpp**, specify the image topic of the camera. For PrimeSense 1.09, the rgb topic is "/camera/rgb/image_raw".
-6. In **src/main_collector.cpp**, specify the base and end-effector link.
-7. Initialize the camera. To initialize PrimeSense 1.09,
+4. In **scripts/calib_collector_server_node**, specify the __target type__, the __data saving directory__, the txt file saving the __configuration points__ you collected and the __image topic__ of the camera. For PrimeSense 1.09, the rgb topic is "/camera/rgb/image_raw". For RealSense D435, the rgb topic is "/camera/color/image_raw"
+5. In **src/calib_collector.py**, specify the base and end-effector link.
+6. Initialize the camera. To initialize PrimeSense 1.09,
 ```
 roslaunch openni2_launch openni2.launch
 ```
-8. Launch the Panda robot
-```
-roslaunch panda_moveit_config panda_control_moveit_rviz.launch robot_ip:=<robot_ip> load_gripper:=<true/false>
-```
-9. Collect the data. Currently only the panda robot is implemented
-```
-rosrun calibration_toolbox main_collector
-```
-The robot will move through the configurations and collect the data. After the collection process is finished, each image is paired with a robot pose file. The image filename is "x_img.png"/; the robot pose filename is "x_robotpose.txt".
-
-### Chessboard Detection
-This repo uses OpenCV to find the chessboard pattern and get the pose of the chessboard in the camera frame.
-
-1. Specify the chessboard pattern, camera info yaml, and data directory in **src/calibration_toolbox/chessboard_detection.py**.
-2. Run the chessboard detector
-```
-python chessboard_detector.py
-```
-The chessboard poses are saved in the data directory. marker poses are saved in "x_markerpose.txt".
-
-### Solve AXXB to get the eye-to-hand transformation
-Use the Park & Martin's method to solve AXXB problem.
-1. Specify the __data directory__ and __calibration option__ in **src/calibration_toolbox/main_calibrate.py**
-2. Solve the AXXB problem
-```
-python main_calibrate.py
-```
-The calibrated transformation will be saved in the data directory as ```pose.txt``` and ```pose.yaml```. 
-Make sure to check each of the check pose in the terminal.
-If the calibration is successful, they should be very close to each other.
-
-## Data Collection (for EBME with Panda robot)
-1. Print the [aruco marker](https://chev.me/arucogen/)
-2. Attach the marker onto a flat rigid surface of the object.
-3. Move the hand to grasp the object.
-4. Move the robot to at least 15 configurations. Make sure in each configuraton, the camera can see the whole marker.
-5. Initialize the camera. To initialize RealSense D435,
+To initialize RealSense D435,
 ```
 roslaunch realsense2_camera rs_camera.launch
 ```
 To check the image of the camera
 ```
-rosrun image_view image_view image:=/camera/rgb/image_raw
+rosrun image_view image_view image:=<image_topic>
 ```
-6. Start the '''single''' node of '''aruco_ros''' to track the specified marker
+7. If you are using aruco marker for calibration, start the '''single''' node of '''aruco_ros''' to track the specified marker
 ```
 roslaunch aruco_ros single.launch markerId:=<marker_id> markerSize:=<marker_size in meter>
 ```
-Check the topic name of camera info and image in launch file before running.
-7. Launch the Panda robot
+8. Launch the Panda robot
 ```
 roslaunch panda_moveit_config panda_control_moveit_rviz.launch robot_ip:=<robot_ip> load_gripper:=<true/false>
 ```
-8. Run the [panda control server node](https://github.com/ChirikjianLab/panda_moveit_ctrl)
+9. Run the [panda control server node](https://github.com/ChirikjianLab/panda_moveit_ctrl)
 ```
 rosrun panda_moveit_ctrl panda_moveit_ctrl_server_node.py
 ```
-9. Run the aruco calib collector server
+10. Run the calib collector server
 ```
-rosrun calibration_toolbox aruco_calib_collector_server_node.py 
+rosrun calibration_toolbox calib_collector_server_node.py
 ```
-10. Request a service to collect data:
+11. Request a service to collect data:
 ```
 rosservice call /collect_data <data_directory>
 ```
+The robot will move through the configurations and collect the data. After the collection process is finished, each image is paired with a robot pose file. The image filename is "x_img.png"/; the robot pose filename is "x_robotpose.txt".
 
-## TODO
-- [ ] Test different calibration options
-- [ ] Add support for the ArUco tag data collector
+### Chessboard Detection
+This repo uses OpenCV to find the chessboard pattern and get the pose of the chessboard in the camera frame. If you are using aruco marker, skip this step.
+
+1. Specify the __chessboard pattern__, __camera info yaml__, and __data directory__ in **src/calibration_toolbox/chessboard_detection.py**.
+2. Run the chessboard detector
+```
+python chessboard_detector.py
+```
+The chessboard poses are saved in the data directory. marker poses are saved in "x_markerpose.txt".
+Make sure the axis generated in all of the images are in the same corner of the chessboard.
+
+### Solve AXXB to get the eye-to-hand transformation
+Use the Park & Martin's method to solve AXXB problem.
+1. Specify the __data directory__ and __calibration option__ in **scripts/main_calib_node.py**
+2. Solve the AXXB problem
+```
+rosrun calibration_toolbox main_calib_node.py
+```
+The calibrated transformation will be saved in the data directory as ```pose.txt``` and ```pose.yaml```. 
+Make sure to check each of the check pose in the terminal.
+If the calibration is successful, they should be very close to each other.
