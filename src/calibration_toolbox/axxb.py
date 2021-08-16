@@ -79,8 +79,8 @@ class AXXBCalibrator(object):
                     assert len(markerpose) == 16
                     markerpose = np.reshape(np.array(markerpose), (4, 4))
                     # add the relative xform
-                    if relative_xform:
-                        markerpose *= relative_xform
+                    if relative_xform.any:
+                        markerpose = np.matmul(markerpose, relative_xform)
 
                 self.marker_poses.append(markerpose)
     
