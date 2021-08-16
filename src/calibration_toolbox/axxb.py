@@ -11,17 +11,17 @@ import yaml
 from calibration_toolbox.utils import *
 
 class AXXBCalibrator(object):
-    """
-    Hand-eye calibration for AXXB problem
-    """
+
     def __init__(self, option="EH"):
+        """Hand-eye calibration for AXXB problem
+        
+        Args
+        - option (string): type of camera-robot configuration. 
+            "EBCB" (eye-on-base, get camera to base), 
+            "EBME" (eye-on-base, get marker in ee), 
+            "EH" (eye-on-hand, get ee to camera)
         """
-        @type  option: string
-        @param option: type of camera-robot configuration. 
-                "EBCB" (eye-on-base, get camera to base), 
-                "EBME" (eye-on-base, get marker in ee), 
-                "EH" (eye-on-hand, get ee to camera)
-        """
+
         self.robot_poses = []
         self.marker_poses = []
         self.pose_indices = []
@@ -40,15 +40,18 @@ class AXXBCalibrator(object):
         elif self.option == "EH":
             self.option_str = "cam_to_ee"
     
-    def load_xforms(self, load_dir):
-        """ 
-        Load robot pose and marker pose from a save directory
-        Two lists of 4x4 homogeneous transformatin matrices will be saved in self.robot_poses
-        and self.marker_poses
+    def load_xforms(self, load_dir, relative_xform=None):
+        """Load robot pose and marker pose from a save directory.
+        Two lists of 4x4 homogeneous transformatin matrices will be 
+        saved in self.robot_poses and self.marker_poses
         
-        @type  load_dir: string
-        @param load_dir: the directory where calibration data was previously acquired from the robot.
+        Args:
+        - load_dir (string): the directory where calibration data was 
+            previously acquired from the robot.
+        - relative_xform (4x4 numpy array): target frame relative to
+            the marker frame.
         """
+
         self.data_dir = load_dir
         print ("Loading {}...".format(load_dir))
         for f in os.listdir(load_dir):
@@ -75,15 +78,15 @@ class AXXBCalibrator(object):
                     markerpose = [float(x) for x in markerpose_str if x != '']
                     assert len(markerpose) == 16
                     markerpose = np.reshape(np.array(markerpose), (4, 4))
+                    # add the relative xform
+                    if relative_xform:
+                        markerpose *= relative_xform
+
                 self.marker_poses.append(markerpose)
     
     def axxb(self):
-        """
-        AX=XB solver.
-        
-        @rtype  self.calib_pose: 4x4 numpy.ndarry
-        @return self.calib_pose: target poses.
-        """
+        """AX=XB solver"""
+
         assert len(self.robot_poses) == len(self.marker_poses), 'robot poses and marker poses are not of the same length!'
 
         n = len(self.robot_poses)
@@ -144,10 +147,10 @@ class AXXBCalibrator(object):
         return self.calib_pose
 
     def test(self):
-        """ 
-        Test the accuracy of the calculated result.
-        Use AXB to calculate the check_pose transformation for each frame.
+        """ Test the accuracy of the calculated result.Use AXB to 
+        calculate the check_pose transformation for each frame.
         """
+        
         n = len(self.robot_poses)
         for i in range(n):
             if self.option == "EH":
@@ -162,10 +165,10 @@ class AXXBCalibrator(object):
             print("=========")
     
     def write_pose_file(self):
+        """Save the calibration file. Calibration file is in
+        (x,y,z) and (x,y,z,w) yaml file
         """
-        Save the calibration file
-        Calibration file is in (x,y,z) and (x,y,z,w) yaml file
-        """
+
         calibration_file = os.path.join(self.data_dir, 'pose.yaml')
         calibration_rotm_file = os.path.join(self.data_dir, 'pose.txt')
         

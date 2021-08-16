@@ -22,8 +22,19 @@ if __name__ == "__main__":
     #"EH" (eye-on-hand, get ee to camera)
     option = "EBME"
 
+    # Relative transformation
+    # Use None if there are no relative transformation
+    # between the target frame and the marker frame
+    relative_xform = None
+    # relative_xform = np.array([
+    #     [1.0, 0.0, 0.0, 0.0],
+    #     [0.0, 1.0, 0.0, 0.0],
+    #     [0.0, 0.0, 0.0, -0.040],
+    #     [0.0, 0.0, 0.0, 1.0]
+    # ])
+
     AXXBCalib = AXXBCalibrator(option)
-    AXXBCalib.load_xforms(data_dir)
+    AXXBCalib.load_xforms(data_dir, relative_xform)
 
     cam2ee = AXXBCalib.axxb()
 

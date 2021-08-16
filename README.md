@@ -112,7 +112,8 @@ If you are using aruco marker, skip this step.
 ### Solve AXXB to get the eye-to-hand transformation
 The Park & Martin's method is used to solve AXXB problem.
 1. Specify the ```data directory``` and ```calibration option``` in ```scripts/main_calib_node.py```
-2. Solve the AXXB problem
+2. (Optional) If you want to calibrate to a target frame which is different than the marker frame, specify the ```relative_xform``` in ```scripts/main_calib_node.py```
+3. Solve the AXXB problem
     ```
     rosrun calibration_toolbox main_calib_node.py
     ```
