@@ -77,6 +77,7 @@ In the data collection part, the robot moves to different configurations and col
     ```
     roslaunch aruco_ros single.launch markerId:=<marker_id> markerSize:=<marker_size in meter>
     ```
+    Remember to specify camera info topic and 
     Otherwise, skip this step.
 8. Launch the Panda robot
     ```
