@@ -14,7 +14,7 @@ if __name__ == "__main__":
     rospy.init_node("main_calib_node", anonymous=True)
     
     # Data directory for saving the captured data
-    data_dir = "/home/raya/Dropbox/160821_panda_ps_EBME"
+    data_dir = "/home/raya/Dropbox/180821_panda_ps_EBME"
 
     # Calibration option
     #"EBCB" (eye-on-base, get camera to base), 
@@ -27,9 +27,9 @@ if __name__ == "__main__":
     # between the target frame and the marker frame
     # relative_xform = None
     relative_xform = np.array([
-        [1.0, 0.0, 0.0, 0.0],
-        [0.0, 1.0, 0.0, 0.0],
-        [0.0, 0.0, 1.0, -0.040],
+        [1.0, 0.0, 0.0, 0.015],
+        [0.0, -1.0, 0.0, 0.010],
+        [0.0, 0.0, -1.0, 0.040],
         [0.0, 0.0, 0.0, 1.0]
     ])
 
