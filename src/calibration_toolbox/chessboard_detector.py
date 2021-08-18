@@ -22,10 +22,10 @@ camera_info_yaml = "/home/raya/.ros/camera_info/rgb_PS1080_PrimeSense.yaml"
 # y_num = 5
 width = 0.010
 x_num = 4
-y_num = 4
+y_num = 3
 
 # Data directory for saving the calibration data
-data_dir = "/home/raya/Dropbox/140821_panda_ps_EBME"
+data_dir = "/home/raya/Dropbox/180821_panda_ps_EBME"
 
 # Visualized axis on the data
 axis = np.float32([[0, 0, 0], [3*width,0,0], [0,3*width,0], [0,0,3*width]]).reshape(-1,3)
@@ -70,7 +70,6 @@ def chessboard_pose(img_dir, img_filename, cam_mtx, cam_dist, objp, pattern=(7, 
     if ret == True:
         # Increase corner accuracy
         corners2 = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
-        
         cv2.drawChessboardCorners(img, chessboard_size_tuple, corners, ret)
         cv2.imwrite(os.path.join(img_dir, img_name + "_corner.png"), img)
 
