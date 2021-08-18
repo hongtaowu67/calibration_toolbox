@@ -24,7 +24,7 @@ from calibration_toolbox.srv import *
 
 class CalibrateCollector(object):
     
-    def __init__(self, target, calib_points_file, image_topic):
+    def __init__(self, target, calib_points_file, image_topic, base_frame, ee_frame, camera_frame):
         """If the target is chessboard, only images and robot poses will be collected.
         The pose of the chess board will be detected later using the chessboard_detector.py
         If the target is aruco, images, marker poses, and robot poses will be collected.
@@ -33,6 +33,8 @@ class CalibrateCollector(object):
             target (string): chessboard / aruco
             calib_points_file (string): files of points for calibration
             image_topic (string): ros topic for the image source
+            base_frame (string): robot base frame
+            ee_frame (string): end effector frame
         """
         rospy.loginfo("Make sure to roslaunch realsense2_camera rs_camera.launch before running this code!")
         rospy.loginfo("Make sure to roslaunch panda_moveit_config panda_control_moveit_rviz.launch robot_ip:=<robot_ip> load_gripper:=<true/false>")
@@ -45,9 +47,9 @@ class CalibrateCollector(object):
         self.calib_points_num = self.calib_points.shape[0]
 
         # Specify the names of the frames in TF
-        self.base_frame_name = "panda_link0"
-        self.ee_frame_name = "panda_EE"
-        self.camera_frame_name = "camera_color_optical_frame"
+        self.base_frame_name = base_frame
+        self.ee_frame_name = ee_frame
+        self.camera_frame_name = camera_frame
 
         if self.target is 'aruco':
             rospy.loginfo("Make sure to roslaunch aruco_ros single.launch markerId:=<markerId> markerSize:=<markerSize>")
@@ -61,8 +63,10 @@ class CalibrateCollector(object):
         self.robot_pose_listener = tf2_ros.TransformListener(self.tfBuffer)
 
         # Initialize the robot
-        self.robot = PandaRobot()
-
+        self.robot = PandaRobot(base_frame=self.base_frame_name,
+                                ee_frame=self.ee_frame_name,
+                                camera_frame=self.camera_frame_name)
+                                
         self.camera_handler = None
 
         self.robot_poses = []
