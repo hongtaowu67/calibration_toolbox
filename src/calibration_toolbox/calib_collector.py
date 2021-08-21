@@ -18,6 +18,7 @@ import geometry_msgs.msg
 from calibration_toolbox.utils import *
 from calibration_toolbox.panda_robot import PandaRobot
 from calibration_toolbox.aruco import ArUco
+from calibration_toolbox.alvar import Alvar
 from calibration_toolbox.ros_camera import ROSCamera
 
 from calibration_toolbox.srv import *
@@ -51,12 +52,19 @@ class CalibrateCollector(object):
         self.ee_frame_name = ee_frame
         self.camera_frame_name = camera_frame
 
-        if self.target is 'aruco':
+        if self.target == 'aruco':
             rospy.loginfo("Make sure to roslaunch aruco_ros single.launch markerId:=<markerId> markerSize:=<markerSize>")
             self.markerIncam_pos = None
             self.markerIncam_orn = None
             self.markerIncam_mat = None
             self.ar_marker_frame_name = "aruco_marker_frame"
+        
+        if self.target == 'alvar':
+            rospy.loginfo("Make sure to roslaunch ar_track_alvar pr2_indiv_no_kinect.launch")
+            self.markerIncam_pos = None
+            self.markerIncam_orn = None
+            self.markerIncam_mat = None
+            self.ar_marker_frame_name = "alvar_marker_frame"
 
         # Initialize TF
         self.tfBuffer = tf2_ros.Buffer()
@@ -94,12 +102,12 @@ class CalibrateCollector(object):
 
         return self.markerIncam_mat, aruco_img
 
-    def save_transforms_to_file_aruco(self, save_dir, calib_pt_idx, tool_transformation, marker_transformation, aruco_img):
+    def save_transforms_to_file_marker(self, save_dir, calib_pt_idx, tool_transformation, marker_transformation, marker_img):
         """Save the transformation to files."""
 
         robot_pose_file = os.path.join(save_dir, str(calib_pt_idx)  + '_robotpose.txt')
         marker_pose_file = os.path.join(save_dir, str(calib_pt_idx) + '_markerpose.txt')
-        aruco_img_file = os.path.join(save_dir, str(calib_pt_idx) + '_img.png')
+        marker_img_file = os.path.join(save_dir, str(calib_pt_idx) + '_img.png')
         
         # Tool pose in robot base frame
         with open(robot_pose_file, 'w') as file1:
@@ -111,8 +119,8 @@ class CalibrateCollector(object):
             for l in np.reshape(marker_transformation, (16, )).tolist():
                 file2.writelines(str(l) + ' ')
         
-        if aruco_img is not None:
-            cv2.imwrite(aruco_img_file, aruco_img)
+        if marker_img is not None:
+            cv2.imwrite(marker_img_file, marker_img)
 
     def save_transforms_to_file_chessboard(self, save_dir, calib_pt_idx, tool_transformation, chessboard_img):
         """Save the transformation to files."""
@@ -132,8 +140,10 @@ class CalibrateCollector(object):
         """Collect data for calibration."""        
 
         # Initialize camera handler
-        if self.target is 'aruco':
+        if self.target == 'aruco':
             self.camera_handler = ArUco()
+        elif self.target == 'alvar':
+            self.camera_handler = Alvar(img_topic=self.image_topic)
         else:
             self.camera_handler = ROSCamera(img_topic=self.image_topic)
 
@@ -151,9 +161,9 @@ class CalibrateCollector(object):
 
             time.sleep(3)
 
-            if self.target == 'aruco':
+            if self.target == 'aruco' or self.target == 'alvar':
                 # Marker Pose and Image
-                marker_pose, aruco_img = self.get_marker_2_cam()
+                marker_pose, marker_img = self.get_marker_2_cam()
 
                 if marker_pose is not None:
                     # Robot Pose
@@ -167,13 +177,14 @@ class CalibrateCollector(object):
                     robot_rotm = quat2rotm(robot_quat)
                     robot_pose = make_rigid_transformation(robot_pos, robot_rotm)
 
-                    self.save_transforms_to_file_aruco(req.data_path, complete_point_num, robot_pose, marker_pose, aruco_img)
+                    self.save_transforms_to_file_marker(req.data_path, complete_point_num, robot_pose, marker_pose, marker_img)
                     complete_point_num += 1
 
                     print ("===============================")
                 else:
                     print ("Marker pose is None! The camera probably cannot see it!")
             
+
             else:
                 # Image
                 chessboard_img = self.camera_handler.get_img()
@@ -205,7 +216,7 @@ class CalibrateCollector(object):
         """Run the server."""
 
         s = rospy.Service("collect_data", CollectData, self.collect_data)
-        rospy.loginfo("Ready to collect data for ArUco...")
+        rospy.loginfo("Ready to collect data for calibration...")
 
         rate = rospy.Rate(10)
         rospy.spin()

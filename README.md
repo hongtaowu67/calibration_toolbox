@@ -19,7 +19,8 @@ To setup the connection of RGBD camera, please refer to [this repository](https:
 pip install opencv-python
 ```
 * [panda_moveit_ctrl](https://github.com/ChirikjianLab/panda_moveit_ctrl) (Optional): ROS package to control the Franka Emika Panda robot. If you are using other robots, please follow ```src/calibration_toolbox/panda_robot.py``` to write your own robot class.
-* [aruco_ros](https://github.com/pal-robotics/aruco_ros) (Optional): for aruco marker tracking. If you are using chessboard, this is not needed.
+* [aruco_ros](https://github.com/pal-robotics/aruco_ros) (Optional): for aruco marker tracking. 
+* [ar_track_alvar](http://wiki.ros.org/ar_track_alvar): for alvar marker tracking. If you are using chessboard, this is not needed.
 
 ## Intrinsic Calibration
 To calibrate instrinsic, follow the instruction in the [camera_calibration ROS package](http://wiki.ros.org/openni_launch/Tutorials/IntrinsicCalibration). If the camera is an RGBD camera, make sure to calibrate both the RGB and IR camera.
@@ -77,7 +78,11 @@ In the data collection part, the robot moves to different configurations and col
     ```
     roslaunch aruco_ros single.launch markerId:=<marker_id> markerSize:=<marker_size in meter>
     ```
-    Remember to specify camera info topic and 
+    for alvar marker:
+    ```
+    roslaunch ar_track_alvar pr2_indiv_no_kinect.launch
+    ```
+    Remember to specify camera info topic, image topic and image frame.
     Otherwise, skip this step.
 8. Launch the Panda robot
     ```
