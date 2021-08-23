@@ -29,7 +29,7 @@ x_num = 7
 y_num = 5
 
 # Data directory for saving the calibration data
-data_dir = "/home/raya/Dropbox/210821_panda_rs_EH_handle"
+data_dir = "/home/raya/Dropbox/230821_panda_rs_EH_scan"
 
 # Visualized axis on the data
 axis = np.float32([[0, 0, 0], [3*width,0,0], [0,3*width,0], [0,0,3*width]]).reshape(-1,3)
