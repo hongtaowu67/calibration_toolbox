@@ -15,11 +15,11 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   message_generation
   joint_state_publisher
-  moveit_core
-  moveit_ros_planning
-  moveit_ros_planning_interface
-  moveit_msgs
-  moveit_visual_tools
+  # moveit_core
+  # moveit_ros_planning
+  # moveit_ros_planning_interface
+  # moveit_msgs
+  # moveit_visual_tools
   robot_state_publisher
   tf2_ros
   tf

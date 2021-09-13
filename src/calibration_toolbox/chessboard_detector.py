@@ -18,18 +18,20 @@ camera_info_yaml = "/home/raya/.ros/camera_info/RealSense_D435_handle.yaml"
 
 
 # Chessboard pattern
-# width = 0.03836
-# x_num = 4
-# y_num = 5
+width = 0.03836
+x_num = 4
+y_num = 5
+
 # width = 0.010
 # x_num = 4
 # y_num = 3
-width = 0.02876
-x_num = 7
-y_num = 5
+
+# width = 0.02876
+# x_num = 7
+# y_num = 5
 
 # Data directory for saving the calibration data
-data_dir = "/home/raya/Dropbox/230821_panda_rs_EH_scan"
+data_dir = "/home/raya/Dropbox/130921_panda_ps_EBCB"
 
 # Visualized axis on the data
 axis = np.float32([[0, 0, 0], [3*width,0,0], [0,3*width,0], [0,0,3*width]]).reshape(-1,3)
