@@ -14,13 +14,13 @@ if __name__ == "__main__":
     rospy.init_node("main_calib_node", anonymous=True)
     
     # Data directory for saving the captured data
-    data_dir = "/home/raya/Dropbox/130921_panda_ps_EBCB"
+    data_dir = "/home/raya/Dropbox/160921_panda_ps_EH_scan"
 
     # Calibration option
     #"EBCB" (eye-on-base, get camera to base), 
     #"EBME" (eye-on-base, get marker in ee), 
     #"EH" (eye-on-hand, get ee to camera)
-    option = "EBCB"
+    option = "EH"
 
     # Relative transformation
     # Use None if there are no relative transformation
