@@ -6,6 +6,7 @@
 # July 06, 2021
 
 import rospy
+import numpy as np
 
 from calibration_toolbox.axxb import AXXBCalibrator
 from calibration_toolbox.utils import *
@@ -14,24 +15,24 @@ if __name__ == "__main__":
     rospy.init_node("main_calib_node", anonymous=True)
     
     # Data directory for saving the captured data
-    data_dir = "/home/raya/Dropbox/200921_panda_ps_EBCB"
+    data_dir = "/home/raya/Dropbox/SR2021_UC/211101_panda_ps_EBME"
 
     # Calibration option
     #"EBCB" (eye-on-base, get camera to base), 
     #"EBME" (eye-on-base, get marker in ee), 
     #"EH" (eye-on-hand, get ee to camera)
-    option = "EBCB"
+    option = "EBME"
 
     # Relative transformation
     # Use None if there are no relative transformation
     # between the target frame and the marker frame
-    relative_xform = None
-    # relative_xform = np.array([
-    #     [-1.0, 0.0, 0.0, 0.0],
-    #     [0.0, 1.0, 0.0, 0.0],
-    #     [0.0, 0.0, -1.0, -0.045],
-    #     [0.0, 0.0, 0.0, 1.0]
-    # ])
+    # relative_xform = None
+    relative_xform = np.array([
+        [1.0, 0.0, 0.0, 0.0],
+        [0.0, -1.0, 0.0, 0.0],
+        [0.0, 0.0, -1.0, -0.04],
+        [0.0, 0.0, 0.0, 1.0]
+    ])
 
     AXXBCalib = AXXBCalibrator(option)
     AXXBCalib.load_xforms(data_dir, relative_xform)

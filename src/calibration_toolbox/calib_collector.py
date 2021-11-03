@@ -183,6 +183,7 @@ class CalibrateCollector(object):
                     print ("===============================")
                 else:
                     print ("Marker pose is None! The camera probably cannot see it!")
+                    complete_point_num += 1
             
 
             else:
