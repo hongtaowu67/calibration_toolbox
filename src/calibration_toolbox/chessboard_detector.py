@@ -12,20 +12,20 @@ import yaml
 from utils import *
 
 # Camera info
-camera_info_yaml = "/home/raya/.ros/camera_info/rgb_PS1080_PrimeSense.yaml"
-# camera_info_yaml = "/home/raya/.ros/camera_info/RealSense_D435_handle.yaml"
+camera_info_yaml = "/home/xin/.ros/camera_info/rgb_PS1080_PrimeSense_block.yaml"
+# camera_info_yaml = "/home/xin/.ros/camera_info/RealSense_D435_handle.yaml"
 
 
 # Chessboard pattern
-# width = 0.038
-# x_num = 4
-# y_num = 5
-width = 0.010
+width = 0.038
 x_num = 4
-y_num = 4
+y_num = 5
+# width = 0.010
+# x_num = 4
+# y_num = 4
 
 # Data directory for saving the calibration data
-data_dir = "/home/raya/Dropbox/140821_panda_ps_EBME"
+data_dir = "/home/xin/Dropbox/RavensTAMP/220107_panda_ps"
 
 # Visualized axis on the data
 axis = np.float32([[0, 0, 0], [3*width,0,0], [0,3*width,0], [0,0,3*width]]).reshape(-1,3)

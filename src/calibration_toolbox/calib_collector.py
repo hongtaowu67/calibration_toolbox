@@ -49,7 +49,7 @@ class CalibrateCollector(object):
         self.ee_frame_name = "panda_EE"
         self.camera_frame_name = "camera_color_optical_frame"
 
-        if self.target is 'aruco':
+        if self.target == 'aruco':
             rospy.loginfo("Make sure to roslaunch aruco_ros single.launch markerId:=<markerId> markerSize:=<markerSize>")
             self.markerIncam_pos = None
             self.markerIncam_orn = None
@@ -201,7 +201,7 @@ class CalibrateCollector(object):
         """Run the server."""
 
         s = rospy.Service("collect_data", CollectData, self.collect_data)
-        rospy.loginfo("Ready to collect data for ArUco...")
+        rospy.loginfo("Ready to collect data...")
 
         rate = rospy.Rate(10)
         rospy.spin()

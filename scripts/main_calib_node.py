@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 
 # Main script for AXXB calibration
 # Author: Hongtao Wu
@@ -14,13 +14,13 @@ if __name__ == "__main__":
     rospy.init_node("main_calib_node", anonymous=True)
     
     # Data directory for saving the captured data
-    data_dir = "/home/raya/Dropbox/140821_panda_ps_EBME"
+    data_dir = "/home/xin/Dropbox/RavensTAMP/220107_panda_ps"
 
     # Calibration option
     #"EBCB" (eye-on-base, get camera to base), 
     #"EBME" (eye-on-base, get marker in ee), 
     #"EH" (eye-on-hand, get ee to camera)
-    option = "EBME"
+    option = "EBCB"
 
     AXXBCalib = AXXBCalibrator(option)
     AXXBCalib.load_xforms(data_dir)
