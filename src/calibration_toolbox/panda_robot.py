@@ -14,7 +14,7 @@ from calibration_toolbox.srv import *
 class PandaRobot(object):
     """Class used to interact with the Panda robot"""
 
-    def __init__(self, base_frame="panda_link0", ee_frame="panda_hand", go_home=True, load_gripper=False):
+    def __init__(self, base_frame="panda_link0", ee_frame="panda_EE", go_home=True, load_gripper=False):
         
         rospy.loginfo("Start setting up the panda robot. Robot will move home...")
 

@@ -46,7 +46,7 @@ class CalibrateCollector(object):
 
         # Specify the names of the frames in TF
         self.base_frame_name = "panda_link0"
-        self.ee_frame_name = "panda_EE"
+        self.ee_frame_name = "panda_hand"
         self.camera_frame_name = "camera_color_optical_frame"
 
         if self.target == 'aruco':
